@@ -8,9 +8,9 @@ namespace Layout.Controllers
 {
     public class MyPurchasesController : Controller
     {
-        public IActionResult Index()
+        public IActionResult MyPurchases()
         {
-            return View();
+            return View("MyPurchases");
         }
     }
 }

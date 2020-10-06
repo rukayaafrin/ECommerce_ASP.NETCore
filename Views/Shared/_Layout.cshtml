@@ -24,18 +24,18 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Product</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Cart">Cart</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Promotion</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="MyPurchases" asp-action="MyPurchases">MyPurchases</a>
                         </li>
 
                         <form style="margin-left:60px;line-height:50px;" class="navbar-form navbar-left" action="/Home/Search" method="post">
                             <div class="form-group">
                                 <input type="text" class="form-control" name="keyword" placeholder="Search">
-
+                                
                             </div>
-
+                            
                         </form>
                         <li class="nav-item">
                             <button type="button" class="btn btn-outline-primary">Search</button>

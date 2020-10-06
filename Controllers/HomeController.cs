@@ -17,18 +17,18 @@ namespace Layout.Controllers
         {
             return View();
         }
-        public IActionResult Product()
+        public IActionResult Cart()
         {
             return View();
         }
         public IActionResult MyPurchases()
         {
-            return View();
+            return View("MyPurchases");
         }
 
         public IActionResult Login()
         {
-            return View();
+           return View();
         }
         public IActionResult Signin()
         {
