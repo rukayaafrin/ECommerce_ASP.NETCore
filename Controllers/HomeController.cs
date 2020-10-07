@@ -6,37 +6,44 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Layout.Models;
-using Layout.DBContext;
+using System.ComponentModel.Design;
+using Layout.Db;
 
 namespace Layout.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly DbProductGallery db;
-        public HomeController(DbProductGallery db)
+        private readonly Database db;
+
+        public HomeController(Database db)
         {
             this.db = db;
         }
 
-
-
         public IActionResult Index()
         {
-            List<Products> products = db.products.ToList();
+            List<Product> products = db.Products.ToList();
             ViewData["products"] = products;
 
+            Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
+            if (session != null)
+            {
+                ViewData["username"] = session.User.Username;
+            }
+
+            // to highlight "Office" as the selected menu-item
+            ViewData["Is_Home"] = "menu_highlight";
+
+            // use sessionId to determine if user has already logged in
+            ViewData["sessionId"] = Request.Cookies["sessionId"];
+
             return View();
         }
-
-        public IActionResult Privacy()
+  
+        [HttpPost]
+        public IActionResult Search(string keyword)
         {
             return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

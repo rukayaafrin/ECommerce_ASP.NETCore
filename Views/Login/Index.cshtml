@@ -1,6 +1,56 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@section Scripts
+{
+    <script src="~/js/login/index.js"></script>
 }
-<h1>This is the Login Page.</h1>
+
+<style>
+
+    table {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .inputkey {
+        padding: 14px 20px;
+    }
+
+    #err_msg {
+        color: red;
+        font-weight: bold;
+        padding: 10px;
+    }
+</style>
+
+<h5 align="center"> Log in to Software4You</h5>
+<br />
+
+<form id="form" action="/Login/Authenticate" method="POST">
+    <table>
+        <tr>
+            <td class="inputkey">
+                Username:
+            </td>
+            <td>
+                <input id="username" type="text" name="username" class="form-control" value=@ViewData["lasttypedusername"] />
+            </td>
+        </tr>
+        <tr>
+            <td class="inputkey">
+                Password:
+            </td>
+            <td>
+                <input id="password" type="password" name="password" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="right">
+                <input type="Submit" value="Log In" class="btn btn-success" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <div id="err_msg">@ViewData["errMsg"]</div>
+            </td>
+        </tr>
+    </table>
+</form>

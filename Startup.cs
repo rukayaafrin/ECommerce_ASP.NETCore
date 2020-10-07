@@ -2,15 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Layout.DBContext;
-using Layout.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Layout.Models;
+using Microsoft.EntityFrameworkCore;
+using Layout.Db;
+using Microsoft.AspNetCore.Mvc;
+using Layout.Middleware;
 
 namespace Layout
 {
@@ -26,22 +27,31 @@ namespace Layout
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-
             services.AddControllersWithViews();
-
-            services.AddDbContext<DbProductGallery>(opt => opt.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("DbConn")));
+            services.AddDbContext<Database>(opt => opt.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("DbConn")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, DbProductGallery db)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, [FromServices] Database db)
         {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<RedirectBadUser>();
 
             app.UseEndpoints(endpoints =>
             {
@@ -50,96 +60,14 @@ namespace Layout
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            bool wantReset = Configuration.GetValue<bool>("Db:WantReset");
-            if (wantReset)
+
+            bool wantreset = Configuration.GetValue<bool>("Db:WantReset");
+            if(wantreset)
             {
                 db.Database.EnsureDeleted();    // wipe out existing database
                 db.Database.EnsureCreated();    // our database is created after this line
 
-                Products product1 = new Products
-                {
-
-                    Name = ".NET Charts",
-                    Description = "Brings powerful charting capabilities to your .NET applications.",
-                    Price = 99,
-                    Image = "/images/Charts.png"
-                }
-                ;
-
-                db.Add(product1);
-
-                Products product2 = new Products
-                {
-
-                    Name = ".NET Paypal",
-                    Description = "Integrate your .NET apps with PayPal the easy way!",
-                    Price = 69,
-                    Image = "/images/Paypal.png"
-                }
-               ;
-                db.Add(product2);
-
-                Products product3 = new Products
-                {
-
-                    Name = ".NET ML",
-                    Description = "Supercharged .NET machine learning libraries.",
-                    Price = 299,
-                    Image = "/images/ML.png"
-                }
-                ;
-                db.Add(product3);
-
-
-                Products product4 = new Products
-                {
-
-                    Name = ".NET Analytics",
-                    Description = "Perform data mining and analytics easily in .NET.",
-                    Price = 299,
-                    Image = "/images/Analytics.png"
-                }
-                ;
-                db.Add(product4);
-
-
-                Products product5 = new Products
-                {
-
-                    Name = ".NET Logger",
-                    Description = "Logs and aggregates events easily in your .NET apps.",
-                    Price = 49,
-                    Image = "/images/Logger.png"
-                }
-                ;
-                db.Add(product5);
-
-
-                Products product6 = new Products
-                {
-
-                    Name = ".NET Numerics",
-                    Description = "Brings powerful charting capabilities to your .NET applications.",
-                    Price = 199,
-                    Image = "/images/Numerics.png"
-                }
-                ;
-                db.Add(product6);
-
-
-                Products product7 = new Products
-                {
-
-                    Name = ".NET Photos",
-                    Description = "Brings beautiful edits to your .NET application pictures.",
-                    Price = 199,
-                    Image = "/images/Photos.png"
-                }
-               ;
-                db.Add(product7);
-
-                db.SaveChanges();
-
+                new DbSeedData(db).Seed();
             }
         }
     }

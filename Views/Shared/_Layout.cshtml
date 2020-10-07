@@ -3,27 +3,55 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Software Shop</title>
+    <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/home.css"/>
 </head>
-<body>
-
-
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
+    <body margin ="10px">
         <div class="container">
-            &copy; 2020 - Software Shop - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <main role="main" class="pb-3">
+                <div style="height:75px;">
+                    <div class="container">
+                        @if (ViewData["sessionId"] == null)
+                        {
+                            <div class="welcome">Welcome to Software4You</div>
+                            <div class="navbar">
+                                <a class="@ViewData["Is_Home"]" asp-area="" asp-controller="Home" asp-action="Index" style="text-decoration: underline">Home</a>
+                                &nbsp;|&nbsp;
+                                <a class="@ViewData["Is_Login"]" asp-area="" asp-controller="Login" asp-action="Index" style="text-decoration: underline">Login</a>
+                            </div>
+                            
+                            
+                        }
+
+                        else
+                        {
+                            <div class="welcome"> Hello, @ViewData["username"]</div>
+                            <div class="navbar">
+                                <a class="@ViewData["Is_Home"]" asp-area="" asp-controller="Home" asp-action="Index" style="text-decoration: underline;">Home</a>
+                                &nbsp;|&nbsp;
+                                <a class="@ViewData["Is_MyPurchases"]" asp-area="" asp-controller="MyPurchases" asp-action="Index" style="text-decoration: underline;">My Purchases</a>
+                                &nbsp;|&nbsp;
+                                <a class="@ViewData["Is_Login"]" asp-area="" asp-controller="Logout" asp-action="Index" style="text-decoration: underline;">Logout</a>
+
+                            </div>
+                        }
+
+
+                    </div>
+                </div>
+                @RenderBody()
+            </main>
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
-</body>
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2020 - ASP.NET Core CA - SA51 Team 4
+            </div>
+        </footer>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        @RenderSection("Scripts", required: false)
+    </body>
 </html>
