@@ -3,17 +3,15 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Layout</title>
+    <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-
             <div class="container">
-
-                <a class="navbar-brand" asp-area="" asp-controller="Office" asp-action="Index"> </a>
+                <a class="navbar-brand">Welcome</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -24,29 +22,13 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Cart">Cart</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="MyPurchases" asp-action="Index">My Purchases</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="MyPurchases" asp-action="MyPurchases">MyPurchases</a>
-                        </li>
-
-                        <form style="margin-left:60px;line-height:50px;" class="navbar-form navbar-left" action="/Home/Search" method="post">
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="keyword" placeholder="Search">
-                                
-                            </div>
-                            
-                        </form>
-                        <li class="nav-item">
-                            <button type="button" class="btn btn-outline-primary">Search</button>
-                        </li>
-
-
-
-                        <li><a href="/Home/Login" style="margin-left:300px;line-height:30px;">Login</a></li>
-                        <li><a href="/Home/Login" style="margin-left:30px;line-height:30px;">Signin</a></li>
                     </ul>
                 </div>
+            </div>
+            <div style="float:right">
+                <a class="nav-link text-dark @ViewData["Is_Login"]" asp-area="" asp-controller="Login" asp-action="Index">Login</a>
             </div>
         </nav>
     </header>
@@ -58,7 +40,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - Layout - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2020 - Layout -
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

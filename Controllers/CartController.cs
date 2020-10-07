@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Layout.Controllers
 {
-    public class MyPurchasesController : Controller
+    public class CartController : Controller
     {
         public IActionResult Index()
         {

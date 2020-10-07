@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Layout.Controllers
 {
-    public class MyPurchasesController : Controller
+    public class LoginController : Controller
     {
         public IActionResult Index()
         {

@@ -1,8 +1,22 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<form class="navbar-form navbar-left" action="/Home/Search" method="post">
+    <table align="center">
+        <tr>
+            <td>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="keyword" placeholder="Search">
+                </div>
+            </td>
+            <td>
+                <button type="button" class="btn btn-outline-primary">Search</button>
+            </td>
+        </tr>
+    </table>
+</form>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <div class="text-center">
+        <h1 class="display-4">This is the home page.</h1>
+        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    </div>

@@ -6,11 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Layout.Controllers
 {
-    public class MyPurchasesController : Controller
+    public class LogoutController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+
     }
 }

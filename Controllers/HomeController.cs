@@ -17,23 +17,7 @@ namespace Layout.Controllers
         {
             return View();
         }
-        public IActionResult Cart()
-        {
-            return View();
-        }
-        public IActionResult MyPurchases()
-        {
-            return View("MyPurchases");
-        }
-
-        public IActionResult Login()
-        {
-           return View();
-        }
-        public IActionResult Signin()
-        {
-            return View();
-        }
+  
         [HttpPost]
         public IActionResult Search(string keyword)
         {
