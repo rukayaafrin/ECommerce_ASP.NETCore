@@ -10,6 +10,10 @@
         margin-right: auto;
     }
 
+    .inputkey {
+        padding: 14px 20px;
+    }
+
     #err_msg {
         color: red;
         font-weight: bold;
@@ -17,10 +21,13 @@
     }
 </style>
 
+<h5 align="center"> Log in to Software4You</h5>
+<br />
+
 <form id="form" action="/Login/Authenticate" method="POST">
     <table>
         <tr>
-            <td>
+            <td class="inputkey">
                 Username:
             </td>
             <td>
@@ -28,7 +35,7 @@
             </td>
         </tr>
         <tr>
-            <td>
+            <td class="inputkey">
                 Password:
             </td>
             <td>

@@ -6,33 +6,39 @@
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/home.css"/>
 </head>
-    <body>
+    <body margin ="10px">
         <div class="container">
             <main role="main" class="pb-3">
                 <div style="height:75px;">
                     <div class="container">
-                        <span style="float:left"><strong>Hello, @ViewData["username"]</strong></span>
-                        @{
-                            if (ViewData["sessionId"] == null)
-                            {
-                                <a class="@ViewData["Is_Login"]" asp-area="" asp-controller="Login" asp-action="Index" style="text-decoration: underline; float:right">Login</a>
-                            }
-                            else
-                            {
-                                <a class="@ViewData["Is_Login"]" asp-area="" asp-controller="Logout" asp-action="Index" style="text-decoration: underline; float:right">Logout</a>
-                            }
+                        @if (ViewData["sessionId"] == null)
+                        {
+                            <div class="welcome">Welcome to Software4You</div>
+                            <div class="navbar">
+                                <a class="@ViewData["Is_Home"]" asp-area="" asp-controller="Home" asp-action="Index" style="text-decoration: underline">Home</a>
+                                &nbsp;|&nbsp;
+                                <a class="@ViewData["Is_Login"]" asp-area="" asp-controller="Login" asp-action="Index" style="text-decoration: underline">Login</a>
+                            </div>
+                            
+                            
                         }
-                        
-                        @{
-                            if (ViewData["sessionId"] != null)
-                            {
-                                <span style="float:right;">&nbsp;|&nbsp;</span>
-                                <a class="@ViewData["Is_MyPurchases"]" asp-area="" asp-controller="MyPurchases" asp-action="Index" style="text-decoration: underline; float:right">My Purchases</a>
-                            }
+
+                        else
+                        {
+                            <div class="welcome"> Hello, @ViewData["username"]</div>
+                            <div class="navbar">
+                                <a class="@ViewData["Is_Home"]" asp-area="" asp-controller="Home" asp-action="Index" style="text-decoration: underline;">Home</a>
+                                &nbsp;|&nbsp;
+                                <a class="@ViewData["Is_MyPurchases"]" asp-area="" asp-controller="MyPurchases" asp-action="Index" style="text-decoration: underline;">My Purchases</a>
+                                &nbsp;|&nbsp;
+                                <a class="@ViewData["Is_Login"]" asp-area="" asp-controller="Logout" asp-action="Index" style="text-decoration: underline;">Logout</a>
+
+                            </div>
                         }
-                    <span style="float:right;">&nbsp;|&nbsp;</span>
-                        <a class="@ViewData["Is_Home"]" asp-area="" asp-controller="Home" asp-action="Index" style="text-decoration: underline; float:right">Home</a>
+
+
                     </div>
                 </div>
                 @RenderBody()
@@ -40,7 +46,7 @@
         </div>
         <footer class="border-top footer text-muted">
             <div class="container">
-                &copy; 2020 - ASP.NET Core CA -
+                &copy; 2020 - ASP.NET Core CA - SA51 Team 4
             </div>
         </footer>
         <script src="~/lib/jquery/dist/jquery.min.js"></script>

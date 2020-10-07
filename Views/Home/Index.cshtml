@@ -2,20 +2,27 @@
     ViewData["Title"] = "Home Page";
     List<Product> products = (List<Product>)ViewData["products"];
 }
-<script src="~/js/home/index.js"></script>
+@section Scripts
+{
+    <script src="~/js/home/index.js"></script>
+}
 
-<div style="float:right; ">
-    <a href="/Cart/Index"><img src="~/images/Cart.png" width="30"/></a>
+<div align="right" style="padding-right:30px">
+    <a href="/Cart/Index"><img src="~/images/Cart.png" width="30" /></a>
     <div id="cart_counter" style="border:1px solid black; width:30px; border-radius: 15px; padding: 5px 10px; display:inline; font-weight:bold;">
         0
     </div>
 </div>
-<div class="input-group mb-3" style="padding-top:10px;">
+
+<div class="input-group mb-3 col-8" style="margin:auto">
     <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon1"><img src="~/images/search.png" width="20" /></span>
     </div>
-    <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1">
+        <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1">
+
 </div>
+
+
 <table align="center">
     @{
         int numOfColumns = 3, numOfRows = (int)(Math.Ceiling(products.Count() / (decimal)numOfColumns));
@@ -28,25 +35,25 @@
                 }
                 if (i < products.Count())
                 {
-                      <td>
-                          <div class="card bg-light m-3" style="float: left; border: 1px solid black; text-align: center; padding: 10px 10px; width: 220px; height: 380px; border-radius:5px;">
-                              <div class="card-header">
-                                  <img src="@products[i].Image" width="100" /> <br />
+                    <td>
+                        <div class="card bg-light m-3" style="float: left; border: 1px solid black; text-align: center; padding: 10px 10px; width: 220px; height: 380px; border-radius:5px;">
+                            <div class="card-header">
+                                <img src="@products[i].Image" width="100" /> <br />
 
-                              </div>
-                              <div class="card-body">
-                                  <h5 class="card-title">@products[i].Name </h5>
-                                  <p class="card-text">
-                                      <div style="height:60px; text-align:left; font-size:12pt;">
-                                          @products[i].Description
-                                      </div>
-                                      <br />
-                                      <br />
-                                      <button class="btn btn-primary" style="padding: 5px 5px; width:160px;" onclick="return cartCounting();">$@products[i].Price - Add To Cart</button>
-                                  </p>
-                              </div>
-                          </div>
-                      </td>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">@products[i].Name </h5>
+                                <p class="card-text">
+                                    <div style="height:60px; text-align:left; font-size:12pt;">
+                                        @products[i].Description
+                                    </div>
+                                    <br />
+                                    <br />
+                                    <button class="btn btn-primary" style="padding: 5px 5px; width:160px;" onclick="return cartCounting();">$@products[i].Price - Add To Cart</button>
+                                </p>
+                            </div>
+                        </div>
+                    </td>
                 }
                 else
                 {
