@@ -1,6 +1,7 @@
 ﻿using Layout.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +18,7 @@ namespace Layout.Db
         {
             AddUsers();
             AddBlacklistedUsers();
+            AddProducts("SeedData/product.data");
         }
         public void AddUsers()
         {
@@ -50,6 +52,27 @@ namespace Layout.Db
                     IsBlacklisted = true
                 });
             }
+            db.SaveChanges();
+        }
+        public void AddProducts(string filename)
+        {
+ 
+            string[] lines = File.ReadAllLines(filename);
+            foreach (string line in lines)
+            {
+                string[] quartet  = line.Split(";");
+                if (quartet.Length == 4)
+                {
+                    db.Products.Add(new Product
+                    {
+                        Name = quartet[0],
+                        Description = quartet[1],
+                        Price = int.Parse(quartet[2]),
+                        Image = quartet[3]
+                    });
+                }
+            }
+
             db.SaveChanges();
         }
     }

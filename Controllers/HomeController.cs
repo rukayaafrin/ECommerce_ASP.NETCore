@@ -22,6 +22,9 @@ namespace Layout.Controllers
 
         public IActionResult Index()
         {
+            List<Product> products = db.Products.ToList();
+            ViewData["products"] = products;
+
             Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
             if (session != null)
             {
