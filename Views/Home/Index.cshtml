@@ -2,27 +2,10 @@
     ViewData["Title"] = "Home Page";
     List<Product> products = (List<Product>)ViewData["products"];
 }
-
-
-
-
-
-<script>
-    function cartCounting() {
-        var counterobj = document.getElementById("cart_counter");
-
-        var count = parseInt(counterobj.innerHTML);
-        //object.value: when
-        count++;
-
-        counterobj.innerHTML = count;
-
-    }
-
-</script>
+<script src="~/js/home/index.js"></script>
 
 <div style="float:right; ">
-    <img src="~/images/Cart.png" width="30" />
+    <a href="/Cart/Index"><img src="~/images/Cart.png" width="30"/></a>
     <div id="cart_counter" style="border:1px solid black; width:30px; border-radius: 15px; padding: 5px 10px; display:inline; font-weight:bold;">
         0
     </div>
@@ -33,26 +16,46 @@
     </div>
     <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1">
 </div>
-<div style="height: 900px; ">
-    @{ foreach (Product prod in products)
+<table align="center">
+    @{
+        int numOfColumns = 3, numOfRows = (int)(Math.Ceiling(products.Count() / (decimal)numOfColumns));
+        int numOfCells = numOfColumns * numOfRows;
+        for (int i = 0; i < numOfCells; i++)
         {
+            if (i % numOfColumns == 0)
+            {
+                @:<tr>
+                }
+                if (i < products.Count())
+                {
+                      <td>
+                          <div class="card bg-light m-3" style="float: left; border: 1px solid black; text-align: center; padding: 10px 10px; width: 220px; height: 380px; border-radius:5px;">
+                              <div class="card-header">
+                                  <img src="@products[i].Image" width="100" /> <br />
 
-
-            <div class="card bg-light m-3" style="float: left; border: 1px solid black; text-align: center; padding: 10px 10px; width: 220px; height: 380px; border-radius:5px;">
-                <div class="card-header">
-                    <img src="@prod.Image" width="100" /> <br />
-
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">@prod.Name </h5>
-                    <p class="card-text">
-                        <div style="height:60px; text-align:left; font-size:12pt;">
-                            @prod.Description
-                        </div>
-                        <br />
-                        <br />
-                        <button class="btn btn-primary" style="padding: 5px 5px; width:160px;" onclick="return cartCounting();">$@prod.Price - Add To Cart</button>
-                    </p>
-                </div>
-            </div> } }
-</div>
+                              </div>
+                              <div class="card-body">
+                                  <h5 class="card-title">@products[i].Name </h5>
+                                  <p class="card-text">
+                                      <div style="height:60px; text-align:left; font-size:12pt;">
+                                          @products[i].Description
+                                      </div>
+                                      <br />
+                                      <br />
+                                      <button class="btn btn-primary" style="padding: 5px 5px; width:160px;" onclick="return cartCounting();">$@products[i].Price - Add To Cart</button>
+                                  </p>
+                              </div>
+                          </div>
+                      </td>
+                }
+                else
+                {
+                    @:<td></td>
+                }
+                if (i % numOfColumns == numOfColumns - 1)
+                {
+                @:</tr>
+            }
+        }
+    }
+</table>
