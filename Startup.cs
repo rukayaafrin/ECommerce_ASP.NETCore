@@ -4,10 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Layout.Models;
+using Microsoft.EntityFrameworkCore;
+using Layout.Db;
+using Microsoft.AspNetCore.Mvc;
+using Layout.Middleware;
 
 namespace Layout
 {
@@ -24,10 +28,11 @@ namespace Layout
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddDbContext<Database>(opt => opt.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("DbConn")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, [FromServices] Database db)
         {
             if (env.IsDevelopment())
             {
@@ -46,12 +51,19 @@ namespace Layout
 
             app.UseAuthorization();
 
+            app.UseMiddleware<RedirectBadUser>();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            db.Database.EnsureDeleted();    // wipe out existing database
+            db.Database.EnsureCreated();    // our database is created after this line
+
+            new DbSeedData(db).Seed();
         }
     }
 }
