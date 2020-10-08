@@ -40,9 +40,6 @@ namespace Layout.Controllers
 
             }
 
-
-
-
             Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
             if (session != null)
             {
@@ -57,6 +54,5 @@ namespace Layout.Controllers
 
             return View();
         }
-
     }
 }
