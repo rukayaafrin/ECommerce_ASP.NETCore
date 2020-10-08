@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Layout.Db;
 using Layout.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Layout.Controllers
 {
@@ -49,6 +50,60 @@ namespace Layout.Controllers
 
                 string currentGuestId = Request.Cookies["guestId"];
                 User currentGuestUser = db.Users.FirstOrDefault(x => x.Id == currentGuestId);
+
+                Order orderMadeByGuest = db.Orders.FirstOrDefault(x => x.UserId == currentGuestUser.Id);
+
+                if (orderMadeByGuest != null)
+                {
+                    List<OrderDetail> orderDetailsMadeByGuest = orderMadeByGuest.OrderDetails.ToList();
+
+                    Order existingUnpaidOrder = db.Orders.FirstOrDefault(x => x.UserId == user.Id && x.PaidFor == false);
+                    if (existingUnpaidOrder == null)
+                    {
+                        orderMadeByGuest.UserId = user.Id;
+
+                        foreach (OrderDetail od in orderDetailsMadeByGuest)
+                        {
+                            od.UserId = user.Id;
+                        }
+                    }
+                    else
+                    {
+                        List<OrderDetail> orderDetailsOfExistingUnpaidOrder = existingUnpaidOrder.OrderDetails.ToList();
+                        foreach (OrderDetail od1 in orderDetailsOfExistingUnpaidOrder)
+                        {
+                            foreach (OrderDetail od2 in orderDetailsMadeByGuest)
+                            {
+                                if(od1.ProductId == od2.ProductId)
+                                {
+                                    od1.Quantity = od1.Quantity + od2.Quantity;
+                                    db.Remove(od2);
+                                    db.SaveChanges();
+                                    break;
+                                }
+                            }
+                        }
+                        List<OrderDetail> remainingOrderDetailsMadeByGuest = orderMadeByGuest.OrderDetails.ToList();
+                        foreach (OrderDetail od in remainingOrderDetailsMadeByGuest)
+                        {
+                            string tempProductId = od.ProductId;
+                            int tempQuantity = od.Quantity;
+                            db.Remove(od);
+                            db.SaveChanges();
+                            OrderDetail temp = new OrderDetail
+                            {
+                                OrderId = existingUnpaidOrder.Id,
+                                ProductId = tempProductId,
+                                Quantity = tempQuantity,
+                                UserId = user.Id
+                            };
+                            db.Add(temp);
+                            db.SaveChanges();
+                        }
+                        db.Remove(orderMadeByGuest);
+                    }
+                }
+
                 db.Remove(currentGuestUser);
                 db.SaveChanges();
 
