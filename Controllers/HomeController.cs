@@ -20,10 +20,28 @@ namespace Layout.Controllers
             this.db = db;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string keyword)
         {
-            List<Product> products = db.Products.ToList();
-            ViewData["products"] = products;
+            if (keyword != null)
+            {
+                ViewData["GetProductDetails"] = keyword;
+                var prodquery = from x in db.Products select x;
+                if (!string.IsNullOrEmpty(keyword))
+                {
+                    prodquery = prodquery.Where(x => x.Description.Contains(keyword) || x.Name.Contains(keyword));
+                }
+
+                ViewData["products"] = prodquery.ToList();
+            }
+            else
+            {
+                List<Product> products = db.Products.ToList();
+                ViewData["products"] = products;
+
+            }
+
+
+
 
             Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
             if (session != null)
@@ -39,11 +57,6 @@ namespace Layout.Controllers
 
             return View();
         }
-  
-        [HttpPost]
-        public IActionResult Search(string keyword)
-        {
-            return View();
-        }
+
     }
 }
