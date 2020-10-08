@@ -53,6 +53,8 @@ namespace Layout
 
             app.UseMiddleware<RedirectBadUser>();
 
+            app.UseMiddleware<CreateGuestIfNotLoggedIn>();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

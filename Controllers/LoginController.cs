@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Layout.Db;
 using Layout.Models;
@@ -45,7 +46,14 @@ namespace Layout.Controllers
                 db.SaveChanges();
 
                 Response.Cookies.Append("sessionId", session.Id);
-                Response.Cookies.Append("username", username);
+
+                string currentGuestId = Request.Cookies["guestId"];
+                User currentGuestUser = db.Users.FirstOrDefault(x => x.Id == currentGuestId);
+                db.Remove(currentGuestUser);
+                db.SaveChanges();
+
+                Response.Cookies.Delete("guestId");
+
                 return RedirectToAction("Index", "Home");
             }
         }
