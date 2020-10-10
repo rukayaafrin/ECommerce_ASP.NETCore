@@ -23,6 +23,7 @@ namespace Layout.Controllers
 
         public IActionResult Index(string keyword)
         {
+            //with search keyword
             if (keyword != null)
             {
                 ViewData["GetProductDetails"] = keyword;
@@ -34,6 +35,8 @@ namespace Layout.Controllers
 
                 ViewData["products"] = prodquery.ToList();
             }
+
+            //no search keyword, display all products
             else
             {
                 List<Product> products = db.Products.ToList();
@@ -41,37 +44,44 @@ namespace Layout.Controllers
 
             }
 
+            
+
             Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
             User guestUser = db.Users.FirstOrDefault(x => x.Id == Request.Cookies["guestId"]);
             ViewData["numberOfProductsInCart"] = "0";
+            
+            //first expression evaluates that 
+            //second expression evaluates that it's a existing guest user
             if ((session != null || guestUser != null) && !(session != null && guestUser != null))
             {
+                //logged in user
                 if (session != null)
                 {
                     ViewData["username"] = session.User.Username;
 
-                    Order existingOrder = db.Orders.FirstOrDefault(x => (x.UserId == session.UserId) && (x.PaidFor == false));
+                    Cart existingCart = db.Carts.FirstOrDefault(x => (x.UserId == session.UserId));
 
-                    if (existingOrder != null)
+                    if (existingCart != null)
                     {
-                        ViewData["numberOfProductsInCart"] = existingOrder.OrderDetails.ToList().Count();
+                        ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
                     }
 
                 }
+
+                //guest user
                 else
                 {
-                    Order existingOrder = db.Orders.FirstOrDefault(x => (x.UserId == guestUser.Id) && (x.PaidFor == false));
+                    Cart existingCart = db.Carts.FirstOrDefault(x => (x.UserId == guestUser.Id));
 
-                    if (existingOrder != null)
+                    if (existingCart != null)
                     {
-                        ViewData["numberOfProductsInCart"] = existingOrder.OrderDetails.ToList().Count();
+                        ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
                     }
                 }
             }
+
             // to highlight "Office" as the selected menu-item
             ViewData["Is_Home"] = "menu_highlight";
-
-            // use sessionId to determine if user has already logged in
             ViewData["sessionId"] = Request.Cookies["sessionId"];
 
             return View();
@@ -84,125 +94,132 @@ namespace Layout.Controllers
             User guestUser = db.Users.FirstOrDefault(x => x.Id == Request.Cookies["guestId"]);
 
             if ((session != null || guestUser != null) && !(session != null && guestUser != null))
-            {
+            { 
                 if (session != null)
                 {
-                    Order existingOrder = db.Orders.FirstOrDefault(x => (x.UserId == session.UserId) && (x.PaidFor == false));
+                    //retrieve existing cart from db
+                    Cart existingCart = db.Carts.FirstOrDefault(x => (x.UserId == session.UserId));
 
-                    //conditional check for current user if he has an existing order that has not been paid for.
-                    //if no, use the conditional below.
-                    if (existingOrder == null)
+                    //no existing cart; create new cart for user
+                    if (existingCart == null)
                     {
-                        Order newOrder = new Order
+                        Cart newCart = new Cart
                         {
                             Id = Guid.NewGuid().ToString(),
-                            PaidFor = false,
                             UserId = session.UserId
                         };
-                        db.Add(newOrder);
+                        db.Add(newCart);
                         db.SaveChanges();
 
-                        OrderDetail newOrderDetail = new OrderDetail
+                        CartDetail newCartDetail = new CartDetail
                         {
-                            OrderId = newOrder.Id,
+                            CartId = newCart.Id,
                             ProductId = int.Parse(input.ProductId),
                             UserId = session.UserId,
                             Quantity = 1
                         };
-                        db.Add(newOrderDetail);
+                        db.Add(newCartDetail);
                         db.SaveChanges();
 
-                        ViewData["numberOfProductsInCart"] = newOrder.OrderDetails.ToList().Count();
+                        //count number of products in cart 
+                        ViewData["numberOfProductsInCart"] = newCart.CartDetails.ToList().Count();
 
-                        Debug.WriteLine($"A new order {newOrder.Id} has been created. 1 product {input.ProductId} has been added to the order details.");
+                        Debug.WriteLine($"A new order {newCart.Id} has been created. 1 product {input.ProductId} has been added to the order details.");
                     }
+
+                    //cart exists, retrieve existing cart details
                     else
                     {
-                        List<OrderDetail> existingOrderDetails = existingOrder.OrderDetails.ToList();
+                        List<CartDetail> existingCartDetails = existingCart.CartDetails.ToList();
 
-                        OrderDetail orderDetailWithThisProduct = existingOrderDetails.Find(x => x.ProductId == int.Parse(input.ProductId));
+                        //check if existing cart already has selected product
+                        CartDetail cartDetailWithThisProduct = existingCartDetails.Find(x => x.ProductId == int.Parse(input.ProductId));
 
-                        if (orderDetailWithThisProduct == null)
+                        //if selected product does not exist in cart, create new cartdetail
+                        if (cartDetailWithThisProduct == null)
                         {
-                            OrderDetail newOrderDetail = new OrderDetail
+                            CartDetail newCartDetail = new CartDetail
                             {
-                                OrderId = existingOrder.Id,
+                                CartId = existingCart.Id,
                                 ProductId = int.Parse(input.ProductId),
                                 UserId = session.UserId,
                                 Quantity = 1
                             };
-                            db.Add(newOrderDetail);
+                            db.Add(newCartDetail);
                             db.SaveChanges();
 
-                            ViewData["numberOfProductsInCart"] = existingOrder.OrderDetails.ToList().Count();
+                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
 
-                            Debug.WriteLine($"1 product {input.ProductId} has been added to the order details in existing order {existingOrder.Id}.");
+                            Debug.WriteLine($"1 product {input.ProductId} has been added to the order details in existing order {existingCart.Id}.");
                         }
+                        
+                        //selected product already exists, increase qty by 1
                         else
                         {
-                            orderDetailWithThisProduct.Quantity = orderDetailWithThisProduct.Quantity + 1;
+                            cartDetailWithThisProduct.Quantity = cartDetailWithThisProduct.Quantity + 1;
                             db.SaveChanges();
 
-                            ViewData["numberOfProductsInCart"] = existingOrder.OrderDetails.ToList().Count();
+                            //update no. of products in cart
+                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
                         }
                     }
                 }
+
                 else
                 {
-                    Order existingOrder = db.Orders.FirstOrDefault(x => (x.UserId == guestUser.Id) && (x.PaidFor == false));
-                    if (existingOrder == null)
+                    Cart existingCart = db.Carts.FirstOrDefault(x => (x.UserId == guestUser.Id));
+                    if (existingCart == null)
                     {
-                        Order newOrder = new Order
+                        Cart newCart = new Cart
                         {
                             Id = Guid.NewGuid().ToString(),
-                            PaidFor = false,
                             UserId = guestUser.Id
                         };
-                        db.Add(newOrder);
+                        db.Add(newCart);
                         db.SaveChanges();
 
-                        OrderDetail newOrderDetail = new OrderDetail
+                        CartDetail newCartDetail = new CartDetail
                         {
-                            OrderId = newOrder.Id,
+                            CartId = newCart.Id,
                             ProductId = int.Parse(input.ProductId),
                             UserId = guestUser.Id,
                             Quantity = 1
                         };
-                        db.Add(newOrderDetail);
+                        db.Add(newCartDetail);
                         db.SaveChanges();
 
-                        ViewData["numberOfProductsInCart"] = newOrder.OrderDetails.ToList().Count();
+                        ViewData["numberOfProductsInCart"] = newCart.CartDetails.ToList().Count();
 
-                        Debug.WriteLine($"A new order {newOrder.Id} has been created. 1 product {input.ProductId} has been added to the order details.");
+                        Debug.WriteLine($"A new order {newCart.Id} has been created. 1 product {input.ProductId} has been added to the cart details.");
                     }
                     else
                     {
-                        List<OrderDetail> existingOrderDetails = existingOrder.OrderDetails.ToList();
+                        List<CartDetail> existingCartDetails = existingCart.CartDetails.ToList();
 
-                        OrderDetail orderDetailWithThisProduct = existingOrderDetails.Find(x => x.ProductId == int.Parse(input.ProductId));
+                        CartDetail cartDetailWithThisProduct = existingCartDetails.Find(x => x.ProductId == int.Parse(input.ProductId));
 
-                        if (orderDetailWithThisProduct == null)
+                        if (cartDetailWithThisProduct == null)
                         {
-                            OrderDetail newOrderDetail = new OrderDetail
+                            CartDetail newCartDetail = new CartDetail
                             {
-                                OrderId = existingOrder.Id,
+                                CartId = existingCart.Id,
                                 ProductId = int.Parse(input.ProductId),
                                 UserId = guestUser.Id,
                                 Quantity = 1
                             };
-                            db.Add(newOrderDetail);
+                            db.Add(newCartDetail);
                             db.SaveChanges();
 
-                            ViewData["numberOfProductsInCart"] = existingOrder.OrderDetails.ToList().Count();
+                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
 
-                            Debug.WriteLine($"1 product {input.ProductId} has been added to the order details in existing order {existingOrder.Id}.");
+                            Debug.WriteLine($"1 product {input.ProductId} has been added to the order details in existing cart {existingCart.Id}.");
                         }
                         else
                         {
-                            orderDetailWithThisProduct.Quantity = orderDetailWithThisProduct.Quantity + 1;
+                            cartDetailWithThisProduct.Quantity = cartDetailWithThisProduct.Quantity + 1;
                             db.SaveChanges();
 
-                            ViewData["numberOfProductsInCart"] = existingOrder.OrderDetails.ToList().Count();
+                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
                         }
                     }
                 }

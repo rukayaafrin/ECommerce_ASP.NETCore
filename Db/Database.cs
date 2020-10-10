@@ -17,13 +17,17 @@ namespace Layout.Db
         }
         protected override void OnModelCreating(ModelBuilder model)
         {
-            model.Entity<OrderDetail>().HasKey(x => new { x.OrderId, x.ProductId });
+            model.Entity<CartDetail>().HasKey(x => new { x.CartId, x.ProductId });
+            model.Entity<PurchaseDetail>().HasKey(x => new { x.PurchaseId, x.ProductId });
         }
 
         public DbSet<Session> Sessions { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderDetail> OrdersDetails { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartDetail> CartDetails { get; set; }
+        public DbSet<Purchase> Purchases { get; set;}
+        public DbSet<PurchaseDetail> PurchaseDetails { get; set; }
+        public DbSet<ActivationKey> ActivationKeys { get; set; }
     }
 }

@@ -51,48 +51,65 @@ namespace Layout.Controllers
                 string currentGuestId = Request.Cookies["guestId"];
                 User currentGuestUser = db.Users.FirstOrDefault(x => x.Id == currentGuestId);
 
-                Order orderMadeByGuest = db.Orders.FirstOrDefault(x => x.UserId == currentGuestUser.Id);
+                Cart cartMadeByGuest = db.Carts.FirstOrDefault(x => x.UserId == currentGuestUser.Id);
 
-                if (orderMadeByGuest != null)
+                //if guest user did have items in cart
+                if (cartMadeByGuest != null)
                 {
-                    List<OrderDetail> orderDetailsMadeByGuest = orderMadeByGuest.OrderDetails.ToList();
+                    List<CartDetail> cartDetailsMadeByGuest = cartMadeByGuest.CartDetails.ToList();
 
-                    Order existingUnpaidOrder = db.Orders.FirstOrDefault(x => x.UserId == user.Id && x.PaidFor == false);
-                    if (existingUnpaidOrder == null)
+                    Cart existingCart = db.Carts.FirstOrDefault(x => x.UserId == user.Id);
+
+                    //if logged in user does not have existing cart
+                    if (existingCart == null)
                     {
-                        orderMadeByGuest.UserId = user.Id;
+                        //assign logged in user id to the cart made originally as guest
+                        cartMadeByGuest.UserId = user.Id;
 
-                        foreach (OrderDetail od in orderDetailsMadeByGuest)
+                        foreach (CartDetail cd in cartDetailsMadeByGuest)
                         {
-                            od.UserId = user.Id;
+                            cd.UserId = user.Id;
                         }
                     }
+
+                    //logged in user has an existing cart
                     else
                     {
-                        List<OrderDetail> orderDetailsOfExistingUnpaidOrder = existingUnpaidOrder.OrderDetails.ToList();
-                        foreach (OrderDetail od1 in orderDetailsOfExistingUnpaidOrder)
+                        //retrieve all cart details of the existing cart
+                        List<CartDetail> cartDetailsOfExistingCart = existingCart.CartDetails.ToList();
+
+                        //compare cart details in existing cart and cart details in cart made while as guest
+                        //and merge into one cart
+                        foreach (CartDetail cd1 in cartDetailsOfExistingCart)
                         {
-                            foreach (OrderDetail od2 in orderDetailsMadeByGuest)
+                            foreach (CartDetail cd2 in cartDetailsMadeByGuest)
                             {
-                                if(od1.ProductId == od2.ProductId)
+                                if(cd1.ProductId == cd2.ProductId)
                                 {
-                                    od1.Quantity = od1.Quantity + od2.Quantity;
-                                    db.Remove(od2);
+                                    cd1.Quantity = cd1.Quantity + cd2.Quantity;
+
+                                    //product in cart made while as guest has been combined to user's existing cart
+                                    //remove this product/cart detail from the database
+                                    db.Remove(cd2);
                                     db.SaveChanges();
                                     break;
                                 }
                             }
                         }
-                        List<OrderDetail> remainingOrderDetailsMadeByGuest = orderMadeByGuest.OrderDetails.ToList();
-                        foreach (OrderDetail od in remainingOrderDetailsMadeByGuest)
+
+
+                        //as user's existing cart may not have all products same as products in cart made while as guest
+                        //account for the remaining products in the cart made while as guest
+                        List<CartDetail> remainingCartDetailsMadeByGuest = cartMadeByGuest.CartDetails.ToList();
+                        foreach (CartDetail cd in remainingCartDetailsMadeByGuest)
                         {
-                            int tempProductId = od.ProductId;
-                            int tempQuantity = od.Quantity;
-                            db.Remove(od);
+                            int tempProductId = cd.ProductId;
+                            int tempQuantity = cd.Quantity;
+                            db.Remove(cd);
                             db.SaveChanges();
-                            OrderDetail temp = new OrderDetail
+                            CartDetail temp = new CartDetail
                             {
-                                OrderId = existingUnpaidOrder.Id,
+                                CartId = existingCart.Id,
                                 ProductId = tempProductId,
                                 Quantity = tempQuantity,
                                 UserId = user.Id
@@ -100,7 +117,7 @@ namespace Layout.Controllers
                             db.Add(temp);
                             db.SaveChanges();
                         }
-                        db.Remove(orderMadeByGuest);
+                        db.Remove(cartMadeByGuest);
                     }
                 }
 

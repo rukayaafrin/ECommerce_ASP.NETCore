@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Layout.Models
 {
-    public class OrderDetail
+    public class CartDetail
     {
         public string CartId { get; set; }
         public int ProductId { get; set; }
