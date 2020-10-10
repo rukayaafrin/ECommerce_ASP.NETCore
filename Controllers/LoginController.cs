@@ -51,28 +51,28 @@ namespace Layout.Controllers
                 string currentGuestId = Request.Cookies["guestId"];
                 User currentGuestUser = db.Users.FirstOrDefault(x => x.Id == currentGuestId);
 
-                Order orderMadeByGuest = db.Orders.FirstOrDefault(x => x.UserId == currentGuestUser.Id);
+                Cart orderMadeByGuest = db.Orders.FirstOrDefault(x => x.UserId == currentGuestUser.Id);
 
                 if (orderMadeByGuest != null)
                 {
-                    List<OrderDetail> orderDetailsMadeByGuest = orderMadeByGuest.OrderDetails.ToList();
+                    List<CartDetail> orderDetailsMadeByGuest = orderMadeByGuest.OrderDetails.ToList();
 
-                    Order existingUnpaidOrder = db.Orders.FirstOrDefault(x => x.UserId == user.Id && x.PaidFor == false);
+                    Cart existingUnpaidOrder = db.Orders.FirstOrDefault(x => x.UserId == user.Id && x.PaidFor == false);
                     if (existingUnpaidOrder == null)
                     {
                         orderMadeByGuest.UserId = user.Id;
 
-                        foreach (OrderDetail od in orderDetailsMadeByGuest)
+                        foreach (CartDetail od in orderDetailsMadeByGuest)
                         {
                             od.UserId = user.Id;
                         }
                     }
                     else
                     {
-                        List<OrderDetail> orderDetailsOfExistingUnpaidOrder = existingUnpaidOrder.OrderDetails.ToList();
-                        foreach (OrderDetail od1 in orderDetailsOfExistingUnpaidOrder)
+                        List<CartDetail> orderDetailsOfExistingUnpaidOrder = existingUnpaidOrder.OrderDetails.ToList();
+                        foreach (CartDetail od1 in orderDetailsOfExistingUnpaidOrder)
                         {
-                            foreach (OrderDetail od2 in orderDetailsMadeByGuest)
+                            foreach (CartDetail od2 in orderDetailsMadeByGuest)
                             {
                                 if(od1.ProductId == od2.ProductId)
                                 {
@@ -83,14 +83,14 @@ namespace Layout.Controllers
                                 }
                             }
                         }
-                        List<OrderDetail> remainingOrderDetailsMadeByGuest = orderMadeByGuest.OrderDetails.ToList();
-                        foreach (OrderDetail od in remainingOrderDetailsMadeByGuest)
+                        List<CartDetail> remainingOrderDetailsMadeByGuest = orderMadeByGuest.OrderDetails.ToList();
+                        foreach (CartDetail od in remainingOrderDetailsMadeByGuest)
                         {
                             string tempProductId = od.ProductId;
                             int tempQuantity = od.Quantity;
                             db.Remove(od);
                             db.SaveChanges();
-                            OrderDetail temp = new OrderDetail
+                            CartDetail temp = new CartDetail
                             {
                                 OrderId = existingUnpaidOrder.Id,
                                 ProductId = tempProductId,
