@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "My Purchases";
-    List<Product> pdtspurchased = (List<Product>)ViewData["pdtspurchased"];
-    List<OrderDetail> purchases = (List<OrderDetail>)ViewData["purchases"];
+    //List<Product> pdtspurchased = (List<Product>)ViewData["pdtspurchased"];
+    List<CartDetail> purchases = (List<CartDetail>)ViewData["purchases"];
 
 }
 
@@ -10,19 +10,23 @@
     <script src="~/js/mypurchases/index.js"></script>
 }
 
-@if (pdtspurchased == null)
-{
+@{
+
+    //if not purchases made yet
+    if (purchases == null)
+    {
     <div align="center">
         <span style="font-size:20px">
             You have yet to purchase anything!
             Browse our products <a href="/">here</a> now! :)
         </span>
     </div>
-    
-}
 
-else
-{
+    }
+
+    //have past purchases
+    else
+    {
     <table align="center">
 
 
@@ -62,9 +66,8 @@ else
                 </td>
             </tr>
         }
-
-
     </table>
 
+    }
 }
 

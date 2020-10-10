@@ -27,12 +27,13 @@ namespace Layout.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
-            //retrieve list of past orders that are paid for
-            List<OrderDetail> purchases = db.OrdersDetails.Where(x => x.UserId == session.UserId
-                                          && x.Order.PaidFor == true).ToList();
+            //retrieve list of past purchases
+            List<PurchaseDetail> purchases = db.PurchaseDetails.Where(x => x.UserId == session.UserId).ToList();
+
+            ViewData["purchases"] = purchases;
 
 
-            //generate unique list of products purchased
+            /*//generate unique list of products purchased
             List<Product> pdtspurchased = null; 
             foreach (var purchase in purchases)
             {
@@ -42,9 +43,8 @@ namespace Layout.Controllers
                     pdtspurchased.Add(product);
                 }
             }
+            ViewData["pdtspurchased"] = pdtspurchased;*/
 
-            ViewData["pdtspurchased"] = pdtspurchased;
-            ViewData["purchases"] = purchases;
 
             //to display username and correct nav bar
             ViewData["sessionId"] = session.Id;
