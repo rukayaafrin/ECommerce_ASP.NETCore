@@ -105,7 +105,7 @@ namespace Layout.Controllers
                         OrderDetail newOrderDetail = new OrderDetail
                         {
                             OrderId = newOrder.Id,
-                            ProductId = input.ProductId,
+                            ProductId = int.Parse(input.ProductId),
                             UserId = session.UserId,
                             Quantity = 1
                         };
@@ -120,14 +120,14 @@ namespace Layout.Controllers
                     {
                         List<OrderDetail> existingOrderDetails = existingOrder.OrderDetails.ToList();
 
-                        OrderDetail orderDetailWithThisProduct = existingOrderDetails.Find(x => x.ProductId == input.ProductId);
+                        OrderDetail orderDetailWithThisProduct = existingOrderDetails.Find(x => x.ProductId == int.Parse(input.ProductId));
 
                         if (orderDetailWithThisProduct == null)
                         {
                             OrderDetail newOrderDetail = new OrderDetail
                             {
                                 OrderId = existingOrder.Id,
-                                ProductId = input.ProductId,
+                                ProductId = int.Parse(input.ProductId),
                                 UserId = session.UserId,
                                 Quantity = 1
                             };
@@ -164,7 +164,7 @@ namespace Layout.Controllers
                         OrderDetail newOrderDetail = new OrderDetail
                         {
                             OrderId = newOrder.Id,
-                            ProductId = input.ProductId,
+                            ProductId = int.Parse(input.ProductId),
                             UserId = guestUser.Id,
                             Quantity = 1
                         };
@@ -179,14 +179,14 @@ namespace Layout.Controllers
                     {
                         List<OrderDetail> existingOrderDetails = existingOrder.OrderDetails.ToList();
 
-                        OrderDetail orderDetailWithThisProduct = existingOrderDetails.Find(x => x.ProductId == input.ProductId);
+                        OrderDetail orderDetailWithThisProduct = existingOrderDetails.Find(x => x.ProductId == int.Parse(input.ProductId));
 
                         if (orderDetailWithThisProduct == null)
                         {
                             OrderDetail newOrderDetail = new OrderDetail
                             {
                                 OrderId = existingOrder.Id,
-                                ProductId = input.ProductId,
+                                ProductId = int.Parse(input.ProductId),
                                 UserId = guestUser.Id,
                                 Quantity = 1
                             };

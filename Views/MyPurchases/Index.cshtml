@@ -1,6 +1,70 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "My Purchases";
+    List<Product> pdtspurchased = (List<Product>)ViewData["pdtspurchased"];
+    List<OrderDetail> purchases = (List<OrderDetail>)ViewData["purchases"];
+
 }
-<h1>This is the My Purchases page.</h1>
+
+@section Scripts
+{
+    <script src="~/js/mypurchases/index.js"></script>
+}
+
+@if (pdtspurchased == null)
+{
+    <div align="center">
+        <span style="font-size:20px">
+            You have yet to purchase anything!
+            Browse our products <a href="/">here</a> now! :)
+        </span>
+    </div>
+    
+}
+
+else
+{
+    <table align="center">
+
+
+        @foreach (Product product in pdtspurchased)
+        {
+
+            //pull out purchases of this product
+            List<OrderDetail> iter = (from item in purchases
+                                      where item.ProductId == product.Id
+                                      orderby item.Timestamp ascending
+                                      select item).ToList();
+
+            <tr>
+                <td>
+                    <img src="@product.Image" width="100" />
+                </td>
+                <td>
+                    <span style="font-size:16px; font-weight: bold;">
+                        @product.Name <br />
+                    </span>
+                    <span style="font-size: 12px">
+                        @product.Description <br />
+                    </span>
+                    <span style="font-size: 12px; font-weight:bold;">Purchase Date:</span>
+                    <select name="purchasedate" id="purchasedate">
+                        @for (int i = 0; i < iter.Count(); i++)
+                        {
+                            DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(iter[i].Timestamp).ToLocalTime();
+                            <option value="@i">@pdatetime.Date.ToString()</option>
+                        }
+                    </select>
+                    <br />
+                    <span style="font-size: 12px; font-weight:bold;">Activation Key:</span>
+
+                    <input id="activkey" type="text" value="" />
+                    <br />
+                </td>
+            </tr>
+        }
+
+
+    </table>
+
+}
+

@@ -86,7 +86,7 @@ namespace Layout.Controllers
                         List<OrderDetail> remainingOrderDetailsMadeByGuest = orderMadeByGuest.OrderDetails.ToList();
                         foreach (OrderDetail od in remainingOrderDetailsMadeByGuest)
                         {
-                            string tempProductId = od.ProductId;
+                            int tempProductId = od.ProductId;
                             int tempQuantity = od.Quantity;
                             db.Remove(od);
                             db.SaveChanges();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Layout.Db;
 using Layout.Models;
@@ -19,16 +20,37 @@ namespace Layout.Controllers
         public IActionResult Index()
         {
             Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
-            if (session != null)
+
+            //redirect user back to login page if not logged in
+            if (session.User.Username == null)
             {
-                ViewData["username"] = session.User.Username;
+                return RedirectToAction("Index", "Login");
             }
 
+            //retrieve list of past orders that are paid for
+            List<OrderDetail> purchases = db.OrdersDetails.Where(x => x.UserId == session.UserId
+                                          && x.Order.PaidFor == true).ToList();
+
+
+            //generate unique list of products purchased
+            List<Product> pdtspurchased = null; 
+            foreach (var purchase in purchases)
+            {
+                Product product = db.Products.Where(x => x.Id == purchase.ProductId).FirstOrDefault();
+                if (!pdtspurchased.Contains(product))
+                {
+                    pdtspurchased.Add(product);
+                }
+            }
+
+            ViewData["pdtspurchased"] = pdtspurchased;
+            ViewData["purchases"] = purchases;
+
+            //to display username and correct nav bar
+            ViewData["sessionId"] = session.Id;
+            ViewData["username"] = session.User.Username;
             // to highlight "Office" as the selected menu-item
             ViewData["Is_MyPurchases"] = "menu_highlight";
-
-            // use sessionId to determine if user has already logged in
-            ViewData["sessionId"] = Request.Cookies["sessionId"];
 
             return View();
         }
