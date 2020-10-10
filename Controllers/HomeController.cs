@@ -114,7 +114,7 @@ namespace Layout.Controllers
                         CartDetail newCartDetail = new CartDetail
                         {
                             CartId = newCart.Id,
-                            ProductId = input.ProductId,
+                            ProductId = int.Parse(input.ProductId),
                             UserId = session.UserId,
                             Quantity = 1
                         };
@@ -133,7 +133,7 @@ namespace Layout.Controllers
                         List<CartDetail> existingCartDetails = existingCart.CartDetails.ToList();
 
                         //check if existing cart already has selected product
-                        CartDetail cartDetailWithThisProduct = existingCartDetails.Find(x => x.ProductId == input.ProductId);
+                        CartDetail cartDetailWithThisProduct = existingCartDetails.Find(x => x.ProductId == int.Parse(input.ProductId));
 
                         //if selected product does not exist in cart, create new cartdetail
                         if (cartDetailWithThisProduct == null)
@@ -141,7 +141,7 @@ namespace Layout.Controllers
                             CartDetail newCartDetail = new CartDetail
                             {
                                 CartId = existingCart.Id,
-                                ProductId = input.ProductId,
+                                ProductId = int.Parse(input.ProductId),
                                 UserId = session.UserId,
                                 Quantity = 1
                             };
@@ -181,7 +181,7 @@ namespace Layout.Controllers
                         CartDetail newCartDetail = new CartDetail
                         {
                             CartId = newCart.Id,
-                            ProductId = input.ProductId,
+                            ProductId = int.Parse(input.ProductId),
                             UserId = guestUser.Id,
                             Quantity = 1
                         };
@@ -196,14 +196,14 @@ namespace Layout.Controllers
                     {
                         List<CartDetail> existingCartDetails = existingCart.CartDetails.ToList();
 
-                        CartDetail cartDetailWithThisProduct = existingCartDetails.Find(x => x.ProductId == input.ProductId);
+                        CartDetail cartDetailWithThisProduct = existingCartDetails.Find(x => x.ProductId == int.Parse(input.ProductId));
 
                         if (cartDetailWithThisProduct == null)
                         {
                             CartDetail newCartDetail = new CartDetail
                             {
                                 CartId = existingCart.Id,
-                                ProductId = input.ProductId,
+                                ProductId = int.Parse(input.ProductId),
                                 UserId = guestUser.Id,
                                 Quantity = 1
                             };

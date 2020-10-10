@@ -103,7 +103,7 @@ namespace Layout.Controllers
                         List<CartDetail> remainingCartDetailsMadeByGuest = cartMadeByGuest.CartDetails.ToList();
                         foreach (CartDetail cd in remainingCartDetailsMadeByGuest)
                         {
-                            string tempProductId = cd.ProductId;
+                            int tempProductId = cd.ProductId;
                             int tempQuantity = cd.Quantity;
                             db.Remove(cd);
                             db.SaveChanges();
