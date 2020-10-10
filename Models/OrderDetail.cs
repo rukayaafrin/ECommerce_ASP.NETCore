@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Layout.Models
 {
-    public class CartDetail
+    public class OrderDetail
     {
         public string CartId { get; set; }
         public int ProductId { get; set; }
@@ -14,16 +14,3 @@ namespace Layout.Models
 
 
     }
-
-
-    public class PurchaseDetail
-    {
-        public string PurchaseId { get; set; }
-        public int ProductId { get; set; }
-        public string UserId { get; set; }
-        public int Quantity { get; set; }
-        public long Timestamp { get; set; }
-    }
-
-   
-}
