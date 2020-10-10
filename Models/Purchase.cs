@@ -15,7 +15,7 @@ namespace Layout.Models
 
         public virtual User User { get; set; }
 
-        public virtual ICollection<CartDetail> CartDetails { get; set; }
+        public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
 
     }
 }
