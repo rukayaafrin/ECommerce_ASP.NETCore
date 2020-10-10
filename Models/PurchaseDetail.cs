@@ -14,5 +14,6 @@ namespace Layout.Models
 
         public virtual Purchase Purchase { get; set; }
         public virtual Product Product { get; set; }
+        public virtual ICollection<ActivationKey> ActivationKeys { get; set; }
     }
 }
