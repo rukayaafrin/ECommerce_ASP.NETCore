@@ -61,7 +61,13 @@
 
                     <span style="font-size: 14px; font-weight:bold;">Activation Key:</span>
 
-                    <input id="activkey" type="text" value="" />
+                    <select name="atvkeys">
+                        @foreach (ActivationKey ak in p.ActivationKeys)
+                        {
+                            <option value="@ak.PdtAtvKey">@ak.PdtAtvKey</option>
+                        }
+                    </select>
+
                     <br />
                 </td>
             </tr>
