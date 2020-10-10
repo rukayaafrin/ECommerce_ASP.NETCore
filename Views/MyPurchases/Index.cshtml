@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "My Purchases";
     //List<Product> pdtspurchased = (List<Product>)ViewData["pdtspurchased"];
-    List<CartDetail> purchases = (List<CartDetail>)ViewData["purchases"];
+    List<PurchaseDetail> purchases = (List<PurchaseDetail>)ViewData["purchases"];
 
 }
 
@@ -30,36 +30,36 @@
     <table align="center">
 
 
-        @foreach (Product product in pdtspurchased)
+        @foreach (PurchaseDetail p in purchases)
         {
-
-            //pull out purchases of this product
-            List<OrderDetail> iter = (from item in purchases
-                                      where item.ProductId == product.Id
-                                      orderby item.Timestamp ascending
-                                      select item).ToList();
-
+            DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(p.Purchase.Timestamp).ToLocalTime();
             <tr>
                 <td>
-                    <img src="@product.Image" width="100" />
+                    <div class="card bg-light m-3" style="float: left; border: 1px solid black; text-align: center; padding: 10px 10px; width: 220px; height: 380px; border-radius:5px;">
+                        <div class="card-header">
+                            <img src="@p.Product.Image" width="100" /> <br />
+
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@p.Product.Name </h5>
+                            <p class="card-text">
+                                <div style="height:60px; text-align:left; font-size:12pt;">
+                                    @p.Product.Description
+                                </div>
+                            </p>
+                        </div>
+                    </div>
                 </td>
                 <td>
-                    <span style="font-size:16px; font-weight: bold;">
-                        @product.Name <br />
-                    </span>
-                    <span style="font-size: 12px">
-                        @product.Description <br />
-                    </span>
-                    <span style="font-size: 12px; font-weight:bold;">Purchase Date:</span>
-                    <select name="purchasedate" id="purchasedate">
-                        @for (int i = 0; i < iter.Count(); i++)
-                        {
-                            DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(iter[i].Timestamp).ToLocalTime();
-                            <option value="@i">@pdatetime.Date.ToString()</option>
-                        }
-                    </select>
+                    <span style="font-size: 14px; font-weight:bold;">Purchased on:</span>
+                    <span id="purchasedate"> @pdatetime</span>
                     <br />
-                    <span style="font-size: 12px; font-weight:bold;">Activation Key:</span>
+
+                    <span style="font-size: 14px; font-weight:bold;">Quantity:</span>
+                    <span> @p.Quantity</span>
+                    <br />
+
+                    <span style="font-size: 14px; font-weight:bold;">Activation Key:</span>
 
                     <input id="activkey" type="text" value="" />
                     <br />

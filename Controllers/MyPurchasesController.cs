@@ -28,7 +28,7 @@ namespace Layout.Controllers
             }
 
             //retrieve list of past purchases
-            List<Purchase> purchases = db.Purchases.Where(x => x.UserId == session.UserId).ToList();
+            List<PurchaseDetail> purchases = db.PurchaseDetails.Where(x => x.UserId == session.UserId).ToList();
 
             ViewData["purchases"] = purchases;
 
