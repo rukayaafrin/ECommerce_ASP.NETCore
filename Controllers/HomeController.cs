@@ -23,28 +23,18 @@ namespace Layout.Controllers
 
         public IActionResult Index(string keyword)
         {
+            List<Product> products = default;
             //with search keyword
-            if (keyword != null)
+            if (!string.IsNullOrEmpty(keyword) && !string.IsNullOrEmpty(keyword.Trim()))
             {
-                ViewData["GetProductDetails"] = keyword;
-                var prodquery = from x in db.Products select x;
-                if (!string.IsNullOrEmpty(keyword))
-                {
-                    prodquery = prodquery.Where(x => x.Description.Contains(keyword) || x.Name.Contains(keyword));
-                }
-
-                ViewData["products"] = prodquery.ToList();
+                products = db.Products.Where(x => x.Description.ToLower().Contains(keyword.Trim().ToLower()) || x.Name.ToLower().Contains(keyword.Trim().ToLower())).ToList();
             }
-
             //no search keyword, display all products
             else
             {
-                List<Product> products = db.Products.ToList();
-                ViewData["products"] = products;
-
+                products = db.Products.ToList();
             }
-
-            
+            ViewData["products"] = products;
 
             Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
             User guestUser = db.Users.FirstOrDefault(x => x.Id == Request.Cookies["guestId"]);
