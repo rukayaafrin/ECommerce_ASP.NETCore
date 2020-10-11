@@ -19,6 +19,7 @@ namespace Layout.Db
         {
             model.Entity<CartDetail>().HasKey(x => new { x.CartId, x.ProductId });
             model.Entity<PurchaseDetail>().HasKey(x => new { x.PurchaseId, x.ProductId });
+            model.Entity<ActivationKey>().HasIndex(x => x.PdtAtvKey).IsUnique();
         }
 
         public DbSet<Session> Sessions { get; set; }
