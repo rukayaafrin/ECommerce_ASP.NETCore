@@ -63,7 +63,7 @@ namespace Layout.Controllers
 
                     if (existingCart != null)
                     {
-                        ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
+                        ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Sum(x => x.Quantity);
                     }
 
                 }
@@ -75,7 +75,7 @@ namespace Layout.Controllers
 
                     if (existingCart != null)
                     {
-                        ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
+                        ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Sum(x => x.Quantity);
                     }
                 }
             }
@@ -122,7 +122,7 @@ namespace Layout.Controllers
                         db.SaveChanges();
 
                         //count number of products in cart 
-                        ViewData["numberOfProductsInCart"] = newCart.CartDetails.ToList().Count();
+                        ViewData["numberOfProductsInCart"] = newCart.CartDetails.ToList().Sum(x => x.Quantity);
 
                         Debug.WriteLine($"A new order {newCart.Id} has been created. 1 product {input.ProductId} has been added to the order details.");
                     }
@@ -148,7 +148,7 @@ namespace Layout.Controllers
                             db.Add(newCartDetail);
                             db.SaveChanges();
 
-                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
+                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Sum(x => x.Quantity);
 
                             Debug.WriteLine($"1 product {input.ProductId} has been added to the order details in existing order {existingCart.Id}.");
                         }
@@ -160,7 +160,7 @@ namespace Layout.Controllers
                             db.SaveChanges();
 
                             //update no. of products in cart
-                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
+                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Sum(x => x.Quantity);
                         }
                     }
                 }
@@ -188,7 +188,7 @@ namespace Layout.Controllers
                         db.Add(newCartDetail);
                         db.SaveChanges();
 
-                        ViewData["numberOfProductsInCart"] = newCart.CartDetails.ToList().Count();
+                        ViewData["numberOfProductsInCart"] = newCart.CartDetails.ToList().Sum(x => x.Quantity);
 
                         Debug.WriteLine($"A new order {newCart.Id} has been created. 1 product {input.ProductId} has been added to the cart details.");
                     }
@@ -210,7 +210,7 @@ namespace Layout.Controllers
                             db.Add(newCartDetail);
                             db.SaveChanges();
 
-                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
+                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Sum(x => x.Quantity);
 
                             Debug.WriteLine($"1 product {input.ProductId} has been added to the order details in existing cart {existingCart.Id}.");
                         }
@@ -219,7 +219,7 @@ namespace Layout.Controllers
                             cartDetailWithThisProduct.Quantity = cartDetailWithThisProduct.Quantity + 1;
                             db.SaveChanges();
 
-                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
+                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Sum(x => x.Quantity);
                         }
                     }
                 }
