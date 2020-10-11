@@ -32,27 +32,28 @@
 
         @foreach (PurchaseDetail p in purchases)
         {
+            var dateFormat = "dd MMM yyyy";
             DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(p.Purchase.Timestamp).ToLocalTime();
+            var pdate = pdatetime.ToString(dateFormat);
             <tr>
                 <td>
-                    <div class="card bg-light m-3" style="float: left; border: 1px solid black; text-align: center; padding: 10px 10px; width: 220px; height: 380px; border-radius:5px;">
+                    <div class="card bg-light m-3" style="float: left; border: 1px solid black; text-align: center; padding: 10px 10px; width: 160px; height: 180px; border-radius:5px;">
                         <div class="card-header">
-                            <img src="@p.Product.Image" width="100" /> <br />
+                            <img src="@p.Product.Image" width="60" /> <br />
 
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">@p.Product.Name </h5>
-                            <p class="card-text">
-                                <div style="height:60px; text-align:left; font-size:12pt;">
-                                    @p.Product.Description
-                                </div>
-                            </p>
                         </div>
                     </div>
                 </td>
-                <td>
+                <td style="padding-left:30px;">
+                    <div style="font-size:12pt;font-style:italic">
+                        @p.Product.Description
+                    </div>
+                    <br />
                     <span style="font-size: 14px; font-weight:bold;">Purchased on:</span>
-                    <span id="purchasedate"> @pdatetime</span>
+                    <span id="purchasedate"> @pdate</span>
                     <br />
 
                     <span style="font-size: 14px; font-weight:bold;">Quantity:</span>
@@ -61,12 +62,14 @@
 
                     <span style="font-size: 14px; font-weight:bold;">Activation Key:</span>
 
-                    <select name="atvkeys">
-                        @foreach (ActivationKey ak in p.ActivationKeys)
-                        {
-                            <option value="@ak.PdtAtvKey">@ak.PdtAtvKey</option>
-                        }
-                    </select>
+                    <input list="@(p.ProductId.ToString()+"atvkeys")" name="atvkeys">
+                    <datalist id="@(p.ProductId.ToString()+"atvkeys")">
+                            @foreach (ActivationKey ak in p.ActivationKeys)
+                            {
+                                <option value="@ak.PdtAtvKey"></option>
+                            }
+                    </datalist>
+  
 
                     <br />
                 </td>

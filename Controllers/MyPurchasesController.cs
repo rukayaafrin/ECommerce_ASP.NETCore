@@ -22,7 +22,7 @@ namespace Layout.Controllers
             Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
 
             //redirect user back to login page if not logged in
-            if (session.User.Username == null)
+            if (session == null)
             {
                 return RedirectToAction("Index", "Login");
             }

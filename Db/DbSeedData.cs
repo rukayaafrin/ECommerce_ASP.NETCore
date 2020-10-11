@@ -10,16 +10,22 @@ namespace Layout.Db
     public class DbSeedData
     {
         private readonly Database db;
+
         public DbSeedData(Database db)
         {
             this.db = db;
         }
+
         public void Seed()
         {
             AddUsers();
             AddBlacklistedUsers();
             AddProducts("SeedData/product.data");
+            AddPurchases("SeedData/purchases.data");
+            AddPurchaseDetails("SeedData/purchasedetails.data");
+            AddActivationKeys("SeedData/activationkeys.data");
         }
+
         public void AddUsers()
         {
             string[] usernameArr = new string[] { "Jon", "Jane" };
@@ -37,6 +43,7 @@ namespace Layout.Db
             }
             db.SaveChanges();
         }
+
         public void AddBlacklistedUsers()
         {
             string[] usernameArr = new string[] { "badboy", "gangsta" };
@@ -54,6 +61,7 @@ namespace Layout.Db
             }
             db.SaveChanges();
         }
+
         public void AddProducts(string filename)
         {
  
@@ -70,6 +78,72 @@ namespace Layout.Db
                         Price = int.Parse(quartet[2]),
                         Image = quartet[3]
                     });
+                }
+            }
+
+            db.SaveChanges();
+        }
+
+        public void AddPurchases(string filename)
+        {
+
+            string[] lines = File.ReadAllLines(filename);
+            foreach (string line in lines)
+            {
+                string[] temp = line.Split(";");
+                if (temp.Length == 2)
+                {
+                    User jane = db.Users.Where(x => x.Username == "Jane").FirstOrDefault();
+                    db.Purchases.Add(new Purchase
+                    {
+                        Id = temp[0],
+                        Timestamp = long.Parse(temp[1]),
+                        UserId = jane.Id
+                    });
+                }
+            }
+
+            db.SaveChanges();
+        }
+
+        public void AddPurchaseDetails(string filename)
+        {
+
+            string[] lines = File.ReadAllLines(filename);
+            foreach (string line in lines)
+            {
+                string[] temp = line.Split(";");
+                if (temp.Length == 3)
+                {
+                    User jane = db.Users.Where(x => x.Username == "Jane").FirstOrDefault();
+                    db.PurchaseDetails.Add(new PurchaseDetail
+                    {
+                        PurchaseId = temp[0],
+                        ProductId = int.Parse(temp[1]),
+                        Quantity = int.Parse(temp[2]),
+                        UserId = jane.Id
+                    });
+                }
+            }
+
+            db.SaveChanges();
+        }
+
+        public void AddActivationKeys(string filename)
+        {
+
+            string[] lines = File.ReadAllLines(filename);
+            foreach (string line in lines)
+            {
+                string[] temp = line.Split(";");
+                if (temp.Length == 3)
+                {
+                    db.ActivationKeys.Add(new ActivationKey
+                    {
+                        PurchaseId = temp[0],
+                        ProductId = int.Parse(temp[1]),
+                        PdtAtvKey = temp[2],
+                    }) ;
                 }
             }
 
