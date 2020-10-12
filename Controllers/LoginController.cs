@@ -31,7 +31,7 @@ namespace Layout.Controllers
 
             if (user == null)
             {
-                ViewData["lasttypedusername"] = password;
+                ViewData["lasttypedusername"] = username;
                 ViewData["errMsg"] = "Incorrect username or password.";
                 ViewData["Is_Login"] = "menu_highlight";
                 return View("Index");
