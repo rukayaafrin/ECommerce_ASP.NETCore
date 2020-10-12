@@ -1,4 +1,14 @@
-﻿window.onload = function () {
+﻿window.onload = function ()
+{
+    function resetfield(field)
+    {
+        
+    }
+}
+
+
+
+/*window.onload = function () {
     let purchasedate = document.getElementById("purchasedate");
 
     purchasedate.onchange = function () {
@@ -7,7 +17,7 @@
         activkeyfield.value = "@iter[dateselected].ActivationKey"
     }
 
-}
+}*/
 
 
 /*function getActivKey(dateselected)

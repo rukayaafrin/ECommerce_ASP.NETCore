@@ -27,27 +27,57 @@ namespace Layout.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
-            //retrieve list of past purchases
-            List<PurchaseDetail> purchases = db.PurchaseDetails.Where(x => x.UserId == session.UserId).ToList();
 
-            ViewData["purchases"] = purchases;
+            //retrieve list of past purchases ordered by purchase date
+            List<PurchaseDetail> purchases = db.PurchaseDetails.Where(x => x.UserId == session.UserId)
+                                                               .OrderBy(x=> x.Purchase.Timestamp).ToList();
 
-
-            /*//generate unique list of products purchased
-            List<Product> pdtspurchased = null; 
-            foreach (var purchase in purchases)
+            //if purchases exist
+            if (purchases.Count()>0)
             {
-                Product product = db.Products.Where(x => x.Id == purchase.ProductId).FirstOrDefault();
-                if (!pdtspurchased.Contains(product))
-                {
-                    pdtspurchased.Add(product);
-                }
-            }
-            ViewData["pdtspurchased"] = pdtspurchased;*/
+                //get list of pdtid of unique products from the purchases
+                List<int> pdtIds = new List<int> { purchases[0].ProductId };
 
+                for (int i = 1; i < purchases.Count(); i++)
+                {
+                    if (!pdtIds.Contains(purchases[i].ProductId))
+                    {
+                        pdtIds.Add(purchases[i].ProductId);
+                    }
+                }
+
+                //group purchasedetails by pdt
+                List<PurGroupedByPdt> grpPurchases = new List<PurGroupedByPdt>();
+                foreach (int pdtId in pdtIds)
+                {
+                    //get list of purchasedetails with same pdtId 
+                    List<PurchaseDetail> pcWithSamePdtId = (from pc in purchases
+                                                            where pc.ProductId == pdtId
+                                                            select pc).ToList();
+                    //get total qty of items with same pdtId from different purchases
+                    int totalquantity = 0;
+                    foreach (PurchaseDetail pc in pcWithSamePdtId)
+                    {
+                        totalquantity += pc.Quantity;
+                    }
+
+                    PurGroupedByPdt currentgrp = new PurGroupedByPdt
+                    {
+                        ProductId = pdtId,
+                        PurchasedItems = pcWithSamePdtId,
+                        TotalQuantity = totalquantity
+                    };
+
+                    grpPurchases.Add(currentgrp);
+                }
+
+
+                ViewData["grpPurchases"] = grpPurchases;
+
+            }
+                
 
             //to display username and correct nav bar
-            ViewData["sessionId"] = session.Id;
             ViewData["username"] = session.User.Username;
             // to highlight "Office" as the selected menu-item
             ViewData["Is_MyPurchases"] = "menu_highlight";

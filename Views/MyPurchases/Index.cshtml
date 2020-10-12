@@ -1,7 +1,8 @@
 ﻿@{
     ViewData["Title"] = "My Purchases";
     //List<Product> pdtspurchased = (List<Product>)ViewData["pdtspurchased"];
-    List<PurchaseDetail> purchases = (List<PurchaseDetail>)ViewData["purchases"];
+    List<PurGroupedByPdt> grpPurchases = (List<PurGroupedByPdt>)ViewData["grpPurchases"];
+    var dateFormat = "dd MMM yyyy";
 
 }
 
@@ -13,7 +14,7 @@
 @{
 
     //if not purchases made yet
-    if (purchases == null)
+    if (grpPurchases == null)
     {
     <div align="center">
         <span style="font-size:20px">
@@ -27,55 +28,89 @@
     //have past purchases
     else
     {
-    <table align="center">
+<table align="center">
 
+    @foreach (PurGroupedByPdt pdtGrp in grpPurchases)
+    {
 
-        @foreach (PurchaseDetail p in purchases)
-        {
-            var dateFormat = "dd MMM yyyy";
-            DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(p.Purchase.Timestamp).ToLocalTime();
-            var pdate = pdatetime.ToString(dateFormat);
-            <tr>
-                <td>
-                    <div class="card bg-light m-3" style="float: left; border: 1px solid black; text-align: center; padding: 10px 10px; width: 160px; height: 180px; border-radius:5px;">
-                        <div class="card-header">
-                            <img src="@p.Product.Image" width="60" /> <br />
+        <tr>
+            <td>
+                <div class="card bg-light m-3" style="float: left; border: 1px solid black; text-align: center; padding: 10px 10px; width: 160px; height: 180px; border-radius:5px;">
+                    <div class="card-header">
+                        <img src="@pdtGrp.PurchasedItems[0].Product.Image" width="60" /> <br />
 
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">@p.Product.Name </h5>
-                        </div>
                     </div>
-                </td>
-                <td style="padding-left:30px;">
-                    <div style="font-size:12pt;font-style:italic">
-                        @p.Product.Description
+                    <div class="card-body">
+                        <h5 class="card-title">@pdtGrp.PurchasedItems[0].Product.Name </h5>
                     </div>
-                    <br />
-                    <span style="font-size: 14px; font-weight:bold;">Purchased on:</span>
-                    <span id="purchasedate"> @pdate</span>
-                    <br />
-
-                    <span style="font-size: 14px; font-weight:bold;">Quantity:</span>
-                    <span> @p.Quantity</span>
-                    <br />
-
-                    <span style="font-size: 14px; font-weight:bold;">Activation Key:</span>
-                    <div>
-                        <input list="@(p.ProductId.ToString()+"atvkeys")" name="atvkeys" style="width:400px;">
-                        <datalist id="@(p.ProductId.ToString()+"atvkeys")" style="width:400px;">
-                            @foreach (ActivationKey ak in p.ActivationKeys)
+                </div>
+            </td>
+            <td style="padding-left:30px;">
+                <div style="font-size:12pt;font-style:italic">
+                    @pdtGrp.PurchasedItems[0].Product.Description
+                </div>
+                <br />
+                <span style="font-size: 14px; font-weight:bold;">Purchased on:</span>
+                @{
+                    if (pdtGrp.PurchasedItems.Count() == 1)
+                    {
+                        DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(pdtGrp.PurchasedItems[0].Purchase.Timestamp).ToLocalTime();
+                        string pdate = pdatetime.ToString(dateFormat);
+                        <span id="purchasedate"> @pdate</span>
+                    }
+                    else
+                    {
+                        //List<string> pdates = null;
+                        <span id="purchasedate">
+                            @foreach (PurchaseDetail pc in pdtGrp.PurchasedItems)
                             {
-                                <option value="@ak.PdtAtvKey"></option>
-                            }
-                        </datalist>
-                    </div>
+                            DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(pc.Purchase.Timestamp).ToLocalTime();
+                            string pdate = pdatetime.ToString(dateFormat);
 
-                    <br />
-                </td>
-            </tr>
-        }
-    </table>
+                            @pdate@:; 
+                            //pdates.Add(pdate);
+                            }
+                        </span>
+
+                    }
+
+                }
+
+                <br />
+
+                <span style="font-size: 14px; font-weight:bold;">Quantity:</span>
+                <span> @pdtGrp.TotalQuantity</span>
+                <br />
+
+                <span style="font-size: 14px; font-weight:bold;">Activation Key:</span>
+                <div>
+                    @if (pdtGrp.TotalQuantity == 1)
+                    {
+                        ActivationKey ak = pdtGrp.PurchasedItems[0].ActivationKeys.FirstOrDefault();
+                        <span>@ak.PdtAtvKey</span>
+                    }
+                    else
+                    {
+                        <input list="@(pdtGrp.ProductId.ToString()+"atvkeys")" name="atvkeys" style="width:400px;" onfocus="this.value=''">
+                        <datalist id="@(pdtGrp.ProductId.ToString()+"atvkeys")" style="width:400px;">
+                            @foreach (PurchaseDetail pc in pdtGrp.PurchasedItems)
+                            {
+                                @foreach (ActivationKey ak in pc.ActivationKeys)
+                                {
+                                    <option value="@ak.PdtAtvKey"></option>
+                                }
+                            }
+
+                        </datalist>
+                    }
+                </div>
+
+
+                <br />
+            </td>
+        </tr>
+    }
+</table>
 
     }
 }
