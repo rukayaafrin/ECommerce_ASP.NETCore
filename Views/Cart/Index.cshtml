@@ -1,6 +1,55 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@{ ViewData["Title"] = "Cart";
+    List<string> cart = (List<string>)ViewData["cart"]; }
+
+<style>
+    table {
+        margin: auto;
+        text-align: center;
+    }
+
+    .add, .reduce {
+        height: 23px;
+        width: 23px;
+        background: #f0f0f0;
+        color: #444;
+    }
+
+        .add:hover, .reduce:hover {
+            cursor: pointer;
+        }
+
+    .count-input {
+        width: 60px;
+        text-align: center;
+    }
+
+    .removeBtn {
+        background-color: #428bca;
+        border-color: #357ebd;
+        color: #fff;
+    }
+
+    .checkoutBtn {
+        background-color: #c3e3f7;
+        font-weight: bold;
+    }
+
+    .closing {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    .confirmBtn {
+        background-color: #e5e2e2;
+        font-weight: bold;
+    }
+</style>
+
 <h1>This is the Cart page.</h1>
+
+
+<form action="/Checkout/Index" method="POST">
+    <input type="submit" value="CHECKOUT" class="checkoutBtn" id="checkoutBtn" />
+</form>
+
