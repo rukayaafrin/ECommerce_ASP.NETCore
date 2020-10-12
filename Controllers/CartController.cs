@@ -19,11 +19,35 @@ namespace Layout.Controllers
 
         public IActionResult Index()
         {
-            List<CartDetail> orderDetails = db.CartDetails.ToList();
-            ViewData["cart"] = orderDetails;
+            Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
+            User guestUser = db.Users.FirstOrDefault(x => x.Id == Request.Cookies["guestId"]);
 
+            if ((session != null || guestUser != null) && !(session != null && guestUser != null))
+            {
+                Cart existingCart = null;
+                //logged in user
+                if (session != null)
+                {
+                    existingCart = db.Carts.FirstOrDefault(x => (x.UserId == session.UserId));
+                    ViewData["username"] = session.User.Username;
+                }
+                //guest user
+                else
+                {
+                    existingCart = db.Carts.FirstOrDefault(x => (x.UserId == guestUser.Id));
 
+                }
 
+                //cart exists
+                if (existingCart != null)
+                {
+                    List<CartDetail> cartDetails = db.CartDetails.Where(x => x.CartId == existingCart.Id).ToList(); 
+                    ViewData["cart"] = cartDetails;
+
+                }
+
+            }
+            
             return View();
         }
 
