@@ -61,15 +61,15 @@
                     <br />
 
                     <span style="font-size: 14px; font-weight:bold;">Activation Key:</span>
-
-                    <input list="@(p.ProductId.ToString()+"atvkeys")" name="atvkeys">
-                    <datalist id="@(p.ProductId.ToString()+"atvkeys")">
+                    <div>
+                        <input list="@(p.ProductId.ToString()+"atvkeys")" name="atvkeys" style="width:400px;">
+                        <datalist id="@(p.ProductId.ToString()+"atvkeys")" style="width:400px;">
                             @foreach (ActivationKey ak in p.ActivationKeys)
                             {
                                 <option value="@ak.PdtAtvKey"></option>
                             }
-                    </datalist>
-  
+                        </datalist>
+                    </div>
 
                     <br />
                 </td>

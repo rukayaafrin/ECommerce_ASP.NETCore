@@ -140,8 +140,8 @@ namespace Layout.Db
                 {
                     db.ActivationKeys.Add(new ActivationKey
                     {
-                        PurchaseId = temp[0],
-                        ProductId = int.Parse(temp[1]),
+                        PurchaseDetailPurchaseId = temp[0],
+                        PurchaseDetailProductId = int.Parse(temp[1]),
                         PdtAtvKey = temp[2],
                     }) ;
                 }
