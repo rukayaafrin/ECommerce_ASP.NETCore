@@ -17,6 +17,7 @@ namespace Layout.Controllers
         {
             this.db = db;
         }
+
         public IActionResult Index()
         {
             Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
@@ -83,6 +84,17 @@ namespace Layout.Controllers
             ViewData["Is_MyPurchases"] = "menu_highlight";
 
             return View();
+        }
+
+        public IActionResult GetDate([FromBody] AtvKeyInput input)
+        {
+            ActivationKey ak = db.ActivationKeys.Where(x => x.PdtAtvKey == input.AtvKey).FirstOrDefault();
+            PurchaseDetail p = db.PurchaseDetails.Where(x => x.PurchaseId == ak.PurchaseDetailPurchaseId 
+                                                && x.ProductId == ak.PurchaseDetailProductId).FirstOrDefault();
+            var dateFormat = "dd MMM yyyy";
+            DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(p.Purchase.Timestamp).ToLocalTime();
+            string pdate = pdatetime.ToString(dateFormat);
+            return Json(new {pdate, pdtId=p.ProductId});
         }
     }
 }

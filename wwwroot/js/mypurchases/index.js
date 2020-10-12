@@ -1,42 +1,25 @@
-﻿window.onload = function ()
+﻿function retrieveDate(event)
 {
-    function resetfield(field)
-    {
-        
-    }
-}
-
-
-
-/*window.onload = function () {
-    let purchasedate = document.getElementById("purchasedate");
-
-    purchasedate.onchange = function () {
-        let dateselected = purchasedate.options[purchasedate.selectedIndex].value;
-        let activkeyfield = document.getElementById("activkey");
-        activkeyfield.value = "@iter[dateselected].ActivationKey"
-    }
-
-}*/
-
-
-/*function getActivKey(dateselected)
-{
+    let atvkeyelem = event.target;
+    let atvkey = atvkeyelem.value;
     let xhr = new XMLHttpRequest();
 
-    xhr.open("POST", "/MyPurchases/GetActivKey");
+    xhr.open("POST", "/MyPurchases/GetDate");
     xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
 
     xhr.onreadystatechange = function () {
         if (this.readyState == XMLHttpRequest.DONE) {
             if (this.status == 200) {
                 let data = JSON.parse(this.responseText);
-                let activkeyfield = document.getElementById("activkey");
-                activkeyfield.value = data;
+                let field = "purchasedate-" + data.pdtId;
+                let purchasedate = document.getElementById(field);
+                purchasedate.innerHTML = data.pdate;
+                atvkeyelem.value = atvkey;
             }
         }
     };
 
-    xhr.send(JSON.stringify({ dateselected: dateselected}));
+    xhr.send(JSON.stringify({AtvKey: atvkey}));
 
-}*/
+}
+

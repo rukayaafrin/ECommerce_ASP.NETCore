@@ -56,12 +56,12 @@
                     {
                         DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(pdtGrp.PurchasedItems[0].Purchase.Timestamp).ToLocalTime();
                         string pdate = pdatetime.ToString(dateFormat);
-                        <span id="purchasedate"> @pdate</span>
+                        <span> @pdate</span>
                     }
                     else
                     {
                         //List<string> pdates = null;
-                        <span id="purchasedate">
+                        <span id="purchasedate-@pdtGrp.ProductId">
                             @foreach (PurchaseDetail pc in pdtGrp.PurchasedItems)
                             {
                             DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(pc.Purchase.Timestamp).ToLocalTime();
@@ -91,7 +91,7 @@
                     }
                     else
                     {
-                        <input list="@(pdtGrp.ProductId.ToString()+"atvkeys")" name="atvkeys" style="width:400px;" onfocus="this.value=''">
+                        <input list="@(pdtGrp.ProductId.ToString()+"atvkeys")" id ="atvkey" name="atvkey" style="width:400px;" onfocus="this.value=''" onchange="retrieveDate(event)">
                         <datalist id="@(pdtGrp.ProductId.ToString()+"atvkeys")" style="width:400px;">
                             @foreach (PurchaseDetail pc in pdtGrp.PurchasedItems)
                             {
