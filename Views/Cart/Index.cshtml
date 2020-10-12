@@ -23,43 +23,103 @@
 
     else
     {
-        <div id="displayItems">
-            @foreach (var cartd in cartDetails)
+        <span style=" float:right">
+
+
+            Total: $ <span id="cTotal">
+                <script src="~/js/Cart.js"></script>
+            </span>
+
+        </span>
+        
+
+        <table align="center">
+            <tr>
+                <td align="center">
+                    Product
+                </td>
+                <td>
+                </td>
+                <td align="center">
+                    Quantity
+                </td>
+                <td>
+                </td>
+                <td align="center">
+                    Price
+                </td>
+
+            </tr>
+            @foreach (var orderd in cartDetails)
+
             {
-                <div class="card bg-light m-3" style="float: left; border: 1px solid black; text-align: center; padding: 10px 10px; width: 220px; height: 380px; border-radius:5px;">
-                    <div class="card-header">
 
-                        <img src="@cartd.Product.Image" width="100" /> <br />
+                <tr>
+                    <td>
+                        <div id="displayItems">
 
-                    </div>
-                    <div class="card-body">
+                            <div class="card bg-light m-3" style="float: left; border: 1px solid black; text-align: center; padding: 10px 10px; width: 220px; height: 300px; border-radius:5px;">
+                                <div class="card-header">
 
-                        <h5 class="card-title">@cartd.Product.Name </h5>
-                        <div class="card-text">
-                            <div style="height:60px; text-align:left; font-size:12pt;">
-                                @cartd.Product.Description
+                                    <img src="@orderd.Product.Image" width="100" /> <br />
+
+                                </div>
+                                <div class="card-body">
+
+                                    <h5 class="card-title">@orderd.Product.Name </h5>
+                                    <div class="card-text">
+                                        <div style="height:60px; text-align:left; font-size:12pt;">
+                                            @orderd.Product.Description
+                                        </div>
+                                        <br />
+                                        <br />
+                                        <br />
+
+                                    </div>
+
+                                </div>
                             </div>
-                            <br />
-                            <br />
+
+
 
                         </div>
+                    </td>
+                    <td>
+                        <button id="increment" onclick="Update_Inc()">+</button>
+                    </td>
+                    <td align="center">
+                        <div id="number_@orderd.ProductId">
+                            <script src="~/js/Cart.js"></script>
+                        </div>
+                    </td>
+                    <td>
+                        <button id="decrement" onclick="Update_Dec()">-</button>
+                    </td>
+                    <td align="center">
 
-                    </div>
-                </div>
+                        <span>
+                            $<span id="Total_@orderd.ProductId">
+                                <script src="~/js/Cart.js"></script>
 
-                <p>Quantity:</p>
 
-                <div id="number">@cartd.Quantity</div>
-                <button id="increment">+</button>
-                <button id="decrement">-</button>
+                            </span>
 
-                <p>Price:</p>
-                <div>
-                    (@cartd.Quantity * @cartd.Product.Price)
-                </div>
+                        </span>
+
+
+                    </td>
+                    <td>
+                        <button id="decrement" value="" onclick="Update_Dec()">Remove</button>
+                    </td>
+                    <td>
+                        <div id="cTotal"></div>
+                    </td>
+                </tr>
+
 
             }
 
-        </div>
+        </table>
+
+        }
     }
-}
