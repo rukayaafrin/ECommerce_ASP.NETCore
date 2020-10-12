@@ -28,8 +28,8 @@ namespace Layout.Controllers
             if (!string.IsNullOrEmpty(keyword) && !string.IsNullOrEmpty(keyword.Trim()))
             {
                 products = db.Products.Where(x => x.Description.ToLower().Contains(keyword.Trim().ToLower()) || x.Name.ToLower().Contains(keyword.Trim().ToLower())).ToList();
+                ViewData["searchtext"] = keyword.Trim();
             }
-            //no search keyword, display all products
             else
             {
                 products = db.Products.ToList();
@@ -113,8 +113,6 @@ namespace Layout.Controllers
 
                         //count number of products in cart 
                         ViewData["numberOfProductsInCart"] = newCart.CartDetails.ToList().Sum(x => x.Quantity);
-
-                        Debug.WriteLine($"A new order {newCart.Id} has been created. 1 product {input.ProductId} has been added to the order details.");
                     }
 
                     //cart exists, retrieve existing cart details
@@ -139,8 +137,6 @@ namespace Layout.Controllers
                             db.SaveChanges();
 
                             ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Sum(x => x.Quantity);
-
-                            Debug.WriteLine($"1 product {input.ProductId} has been added to the order details in existing order {existingCart.Id}.");
                         }
                         
                         //selected product already exists, increase qty by 1
@@ -179,8 +175,6 @@ namespace Layout.Controllers
                         db.SaveChanges();
 
                         ViewData["numberOfProductsInCart"] = newCart.CartDetails.ToList().Sum(x => x.Quantity);
-
-                        Debug.WriteLine($"A new order {newCart.Id} has been created. 1 product {input.ProductId} has been added to the cart details.");
                     }
                     else
                     {
@@ -202,7 +196,6 @@ namespace Layout.Controllers
 
                             ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Sum(x => x.Quantity);
 
-                            Debug.WriteLine($"1 product {input.ProductId} has been added to the order details in existing cart {existingCart.Id}.");
                         }
                         else
                         {
