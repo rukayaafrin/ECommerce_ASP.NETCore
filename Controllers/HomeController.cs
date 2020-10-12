@@ -23,28 +23,18 @@ namespace Layout.Controllers
 
         public IActionResult Index(string keyword)
         {
+            List<Product> products = default;
             //with search keyword
-            if (keyword != null)
+            if (!string.IsNullOrEmpty(keyword) && !string.IsNullOrEmpty(keyword.Trim()))
             {
-                ViewData["GetProductDetails"] = keyword;
-                var prodquery = from x in db.Products select x;
-                if (!string.IsNullOrEmpty(keyword))
-                {
-                    prodquery = prodquery.Where(x => x.Description.Contains(keyword) || x.Name.Contains(keyword));
-                }
-
-                ViewData["products"] = prodquery.ToList();
+                products = db.Products.Where(x => x.Description.ToLower().Contains(keyword.Trim().ToLower()) || x.Name.ToLower().Contains(keyword.Trim().ToLower())).ToList();
+                ViewData["searchtext"] = keyword.Trim();
             }
-
-            //no search keyword, display all products
             else
             {
-                List<Product> products = db.Products.ToList();
-                ViewData["products"] = products;
-
+                products = db.Products.ToList();
             }
-
-            
+            ViewData["products"] = products;
 
             Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
             User guestUser = db.Users.FirstOrDefault(x => x.Id == Request.Cookies["guestId"]);
@@ -63,7 +53,7 @@ namespace Layout.Controllers
 
                     if (existingCart != null)
                     {
-                        ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
+                        ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Sum(x => x.Quantity);
                     }
 
                 }
@@ -75,7 +65,7 @@ namespace Layout.Controllers
 
                     if (existingCart != null)
                     {
-                        ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
+                        ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Sum(x => x.Quantity);
                     }
                 }
             }
@@ -122,9 +112,7 @@ namespace Layout.Controllers
                         db.SaveChanges();
 
                         //count number of products in cart 
-                        ViewData["numberOfProductsInCart"] = newCart.CartDetails.ToList().Count();
-
-                        Debug.WriteLine($"A new order {newCart.Id} has been created. 1 product {input.ProductId} has been added to the order details.");
+                        ViewData["numberOfProductsInCart"] = newCart.CartDetails.ToList().Sum(x => x.Quantity);
                     }
 
                     //cart exists, retrieve existing cart details
@@ -148,9 +136,7 @@ namespace Layout.Controllers
                             db.Add(newCartDetail);
                             db.SaveChanges();
 
-                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
-
-                            Debug.WriteLine($"1 product {input.ProductId} has been added to the order details in existing order {existingCart.Id}.");
+                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Sum(x => x.Quantity);
                         }
                         
                         //selected product already exists, increase qty by 1
@@ -160,7 +146,7 @@ namespace Layout.Controllers
                             db.SaveChanges();
 
                             //update no. of products in cart
-                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
+                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Sum(x => x.Quantity);
                         }
                     }
                 }
@@ -188,9 +174,7 @@ namespace Layout.Controllers
                         db.Add(newCartDetail);
                         db.SaveChanges();
 
-                        ViewData["numberOfProductsInCart"] = newCart.CartDetails.ToList().Count();
-
-                        Debug.WriteLine($"A new order {newCart.Id} has been created. 1 product {input.ProductId} has been added to the cart details.");
+                        ViewData["numberOfProductsInCart"] = newCart.CartDetails.ToList().Sum(x => x.Quantity);
                     }
                     else
                     {
@@ -210,16 +194,15 @@ namespace Layout.Controllers
                             db.Add(newCartDetail);
                             db.SaveChanges();
 
-                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
+                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Sum(x => x.Quantity);
 
-                            Debug.WriteLine($"1 product {input.ProductId} has been added to the order details in existing cart {existingCart.Id}.");
                         }
                         else
                         {
                             cartDetailWithThisProduct.Quantity = cartDetailWithThisProduct.Quantity + 1;
                             db.SaveChanges();
 
-                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Count();
+                            ViewData["numberOfProductsInCart"] = existingCart.CartDetails.ToList().Sum(x => x.Quantity);
                         }
                     }
                 }
