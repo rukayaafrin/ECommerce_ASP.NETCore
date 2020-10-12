@@ -60,17 +60,31 @@
                     }
                     else
                     {
-                        //List<string> pdates = null;
-                        <span id="purchasedate-@pdtGrp.ProductId">
-                            @foreach (PurchaseDetail pc in pdtGrp.PurchasedItems)
-                            {
-                            DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(pc.Purchase.Timestamp).ToLocalTime();
-                            string pdate = pdatetime.ToString(dateFormat);
+                        List<string> pdates = null;
+            <span id="purchasedate-@pdtGrp.ProductId">
+                @foreach (PurchaseDetail pc in pdtGrp.PurchasedItems)
+                {
+                    DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(pc.Purchase.Timestamp).ToLocalTime();
+                    string pdate = pdatetime.ToString(dateFormat);
 
-                            @pdate@:; 
-                            //pdates.Add(pdate);
-                            }
-                        </span>
+                    if (!pdates.Contains(pdate))
+                    {
+                        pdates.Add(pdate);
+                    }
+                }
+
+                @if (pdates.Count() == 1)
+                {
+                    @pdates[0];
+                }
+                else
+                {
+                    foreach (string pd in pdates)
+                    {
+                        @pd@:;
+                    }
+                }
+            </span>
 
                     }
 
