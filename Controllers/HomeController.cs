@@ -40,8 +40,7 @@ namespace Layout.Controllers
             User guestUser = db.Users.FirstOrDefault(x => x.Id == Request.Cookies["guestId"]);
             ViewData["numberOfProductsInCart"] = "0";
             
-            //first expression evaluates that 
-            //second expression evaluates that it's a existing guest user
+            //either session exists or guest exists (both cannot exist at the same time)
             if ((session != null || guestUser != null) && !(session != null && guestUser != null))
             {
                 //logged in user

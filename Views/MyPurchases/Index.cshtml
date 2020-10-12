@@ -1,6 +1,143 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "My Purchases";
+    //List<Product> pdtspurchased = (List<Product>)ViewData["pdtspurchased"];
+    List<PurGroupedByPdt> grpPurchases = (List<PurGroupedByPdt>)ViewData["grpPurchases"];
+    var dateFormat = "dd MMM yyyy";
+
 }
-<h1>This is the My Purchases page.</h1>
+
+@section Scripts
+{
+    <script src="~/js/mypurchases/index.js"></script>
+}
+
+@{
+
+    //if not purchases made yet
+    if (grpPurchases == null)
+    {
+    <div align="center">
+        <span style="font-size:20px">
+            You have yet to purchase anything!
+            Browse our products <a href="/">here</a> now! :)
+        </span>
+    </div>
+
+    }
+
+    //have past purchases
+    else
+    {
+<table align="center">
+
+    @foreach (PurGroupedByPdt pdtGrp in grpPurchases)
+    {
+
+        <tr>
+            <td>
+                <div class="card bg-light m-3" style="float: left; border: 1px solid black; text-align: center; padding: 10px 10px; width: 160px; height: 180px; border-radius:5px;">
+                    <div class="card-header">
+                        <img src="@pdtGrp.PurchasedItems[0].Product.Image" width="60" /> <br />
+
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@pdtGrp.PurchasedItems[0].Product.Name </h5>
+                    </div>
+                </div>
+            </td>
+            <td style="padding-left:30px;">
+                <div style="font-size:12pt;font-style:italic">
+                    @pdtGrp.PurchasedItems[0].Product.Description
+                </div>
+                <br />
+                <span style="font-size: 14px; font-weight:bold;">Purchased on:</span>
+                @{
+                    if (pdtGrp.PurchasedItems.Count() == 1)
+                    {
+                        DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(pdtGrp.PurchasedItems[0].Purchase.Timestamp).ToLocalTime();
+                        string pdate = pdatetime.ToString(dateFormat);
+                        <span> @pdate</span>
+                    }
+                    else
+                    {
+                        List<string> pdates = new List<string>();
+
+                        //add first date to list
+                        DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(pdtGrp.PurchasedItems[0].Purchase.Timestamp).ToLocalTime();
+                        string pdate = pdatetime.ToString(dateFormat);
+                        pdates.Add(pdate);
+
+                        //add additional dates to list
+                        for (int i = 1; i < pdtGrp.PurchasedItems.Count(); i++)
+                        {
+                            DateTimeOffset pdatetime1 = 
+                                DateTimeOffset.FromUnixTimeSeconds(pdtGrp.PurchasedItems[i].Purchase.Timestamp).ToLocalTime();
+                            string pdate1 = pdatetime.ToString(dateFormat);
+
+                            if (!pdates.Contains(pdate1))
+                            {
+                                pdates.Add(pdate1);
+                            }
+                        }
+
+                        //display date(s)
+                        <span id="purchasedate-@pdtGrp.ProductId">
+                            <!--if only one unique date despite more than one purchase, i.e. multiple purchases on same day-->
+                            @if (pdates.Count() == 1)
+                            {
+                                @pdates[0];
+                            }
+
+                            //purchases on different days, display all dates
+                            else
+                            {
+                                foreach (string pd in pdates)
+                                {
+                                    @pd@:;
+                                }
+                            }
+                        </span>
+
+                    }
+
+                }
+
+                <br />
+
+                <span style="font-size: 14px; font-weight:bold;">Quantity:</span>
+                <span> @pdtGrp.TotalQuantity</span>
+                <br />
+
+                <span style="font-size: 14px; font-weight:bold;">Activation Key:</span>
+                <div>
+                    @if (pdtGrp.TotalQuantity == 1)
+                    {
+                        ActivationKey ak = pdtGrp.PurchasedItems[0].ActivationKeys.FirstOrDefault();
+                        <span>@ak.PdtAtvKey</span>
+                    }
+                    else
+                    {
+                        <input list="@(pdtGrp.ProductId.ToString()+"atvkeys")" id="atvkey" name="atvkey" style="width:400px;" onfocus="this.value=''" onchange="retrieveDate(event)">
+                        <datalist id="@(pdtGrp.ProductId.ToString()+"atvkeys")" style="width:400px;">
+                            @foreach (PurchaseDetail pc in pdtGrp.PurchasedItems)
+                            {
+                                @foreach (ActivationKey ak in pc.ActivationKeys)
+                                {
+                                    <option value="@ak.PdtAtvKey"></option>
+                                }
+                            }
+
+                        </datalist>
+                    }
+                </div>
+
+
+                <br />
+            </td>
+        </tr>
+    }
+</table>
+
+    }
+}
+

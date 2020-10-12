@@ -13,3 +13,5 @@ namespace Layout.Models
         public virtual ICollection<CartDetail> CartDetails { get; set; }
     }
 }
+
+ 
