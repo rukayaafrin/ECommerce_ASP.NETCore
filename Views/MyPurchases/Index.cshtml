@@ -60,31 +60,43 @@
                     }
                     else
                     {
-                        List<string> pdates = null;
-            <span id="purchasedate-@pdtGrp.ProductId">
-                @foreach (PurchaseDetail pc in pdtGrp.PurchasedItems)
-                {
-                    DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(pc.Purchase.Timestamp).ToLocalTime();
-                    string pdate = pdatetime.ToString(dateFormat);
+                        List<string> pdates = new List<string>();
 
-                    if (!pdates.Contains(pdate))
-                    {
+                        //add first date to list
+                        DateTimeOffset pdatetime = DateTimeOffset.FromUnixTimeSeconds(pdtGrp.PurchasedItems[0].Purchase.Timestamp).ToLocalTime();
+                        string pdate = pdatetime.ToString(dateFormat);
                         pdates.Add(pdate);
-                    }
-                }
 
-                @if (pdates.Count() == 1)
-                {
-                    @pdates[0];
-                }
-                else
-                {
-                    foreach (string pd in pdates)
-                    {
-                        @pd@:;
-                    }
-                }
-            </span>
+                        //add additional dates to list
+                        for (int i = 1; i < pdtGrp.PurchasedItems.Count(); i++)
+                        {
+                            DateTimeOffset pdatetime1 = 
+                                DateTimeOffset.FromUnixTimeSeconds(pdtGrp.PurchasedItems[i].Purchase.Timestamp).ToLocalTime();
+                            string pdate1 = pdatetime.ToString(dateFormat);
+
+                            if (!pdates.Contains(pdate1))
+                            {
+                                pdates.Add(pdate1);
+                            }
+                        }
+
+                        //display date(s)
+                        <span id="purchasedate-@pdtGrp.ProductId">
+                            <!--if only one unique date despite more than one purchase, i.e. multiple purchases on same day-->
+                            @if (pdates.Count() == 1)
+                            {
+                                @pdates[0];
+                            }
+
+                            //purchases on different days, display all dates
+                            else
+                            {
+                                foreach (string pd in pdates)
+                                {
+                                    @pd@:;
+                                }
+                            }
+                        </span>
 
                     }
 
@@ -105,7 +117,7 @@
                     }
                     else
                     {
-                        <input list="@(pdtGrp.ProductId.ToString()+"atvkeys")" id ="atvkey" name="atvkey" style="width:400px;" onfocus="this.value=''" onchange="retrieveDate(event)">
+                        <input list="@(pdtGrp.ProductId.ToString()+"atvkeys")" id="atvkey" name="atvkey" style="width:400px;" onfocus="this.value=''" onchange="retrieveDate(event)">
                         <datalist id="@(pdtGrp.ProductId.ToString()+"atvkeys")" style="width:400px;">
                             @foreach (PurchaseDetail pc in pdtGrp.PurchasedItems)
                             {
