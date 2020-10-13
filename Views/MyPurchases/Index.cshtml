@@ -72,7 +72,7 @@
                         {
                             DateTimeOffset pdatetime1 = 
                                 DateTimeOffset.FromUnixTimeSeconds(pdtGrp.PurchasedItems[i].Purchase.Timestamp).ToLocalTime();
-                            string pdate1 = pdatetime.ToString(dateFormat);
+                            string pdate1 = pdatetime1.ToString(dateFormat);
 
                             if (!pdates.Contains(pdate1))
                             {
