@@ -41,8 +41,9 @@ namespace Layout.Controllers
                 db.Purchases.Add(pur);
                 db.SaveChanges();
 
-                //retrieve cart details of user
-                List<CartDetail> cds = db.CartDetails.Where(x=>x.UserId == session.UserId).ToList();
+                //retrieve cart and cart details of user
+                Cart cart = db.Carts.FirstOrDefault(x => x.UserId == session.UserId);
+                List<CartDetail> cds = cart.CartDetails.ToList();
 
                 //transfer data from cartdetail to purchasedetail
                 foreach (CartDetail cd in cds)
@@ -74,7 +75,8 @@ namespace Layout.Controllers
                     db.CartDetails.Remove(cd);
                     db.SaveChanges();
                 }
-
+                db.Remove(cart);
+                db.SaveChanges();
 
                 ViewData["sessionId"] = HttpContext.Request.Cookies["sessionId"];
 
