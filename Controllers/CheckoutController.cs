@@ -22,9 +22,9 @@ namespace Layout.Controllers
             Session session = db.Sessions.FirstOrDefault(x => x.Id ==
               Request.Cookies["sessionId"]);
 
-            //check whether user has logged in
-            //if never login, redirect to login page
-            if(session==null)
+            //safeguard to check whether user has logged in;
+            //guest user would have already been redirected to login page with js function
+            if (session == null)
             {
                 return RedirectToAction("Index", "Login");
             }

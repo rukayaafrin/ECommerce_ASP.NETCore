@@ -3,10 +3,15 @@
     List<CartDetail> cartDetails = (List<CartDetail>)ViewData["cart"];
 }
 
+@section Scripts
+{
+    <script src="~/js/cart/checkout.js"></script>
+}
+
 
 <div style="height:30px;">
     <span style="float: left">
-        <strong> VIEW CART</strong> | <a href="/Home/Index">Continue Shopping </a> | <a href="/Checkout/Index">Checkout</a>
+        <strong> VIEW CART</strong> | <a href="/Home/Index">Continue Shopping </a> | <a href="/Checkout/Index" onclick="return checkLogin();">Checkout</a>
     </span>
     <span style="float:right" id="totalPrice"></span>
 </div>
