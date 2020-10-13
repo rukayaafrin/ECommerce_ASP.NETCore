@@ -17,7 +17,7 @@
     if (grpPurchases == null)
     {
         <div align="center">
-            <span style="font-size:20px">
+            <span style="font-size:24px">
                 You have yet to purchase anything!
                 Browse our products <a href="/">here</a> now! :)
             </span>
@@ -28,13 +28,17 @@
     //have past purchases
     else
     {
+        <span style="margin-left:25px; font-size:22px; font-style:italic; font-weight:400;">Your Purchases</span>
+        <br />
+        <br />
+
         <table align="center">
 
             @foreach (PurGroupedByPdt pdtGrp in grpPurchases)
             {
 
                 <tr>
-                    <td>
+                    <td style="padding-bottom:50px">
                         <div class="card bg-light m-3" style="float: left; border: 1px solid black; text-align: center; padding: 10px 10px; width: 190px; height: 250px; border-radius:5px;">
                             <div class="card-header">
                                 <img src="@pdtGrp.PurchasedItems[0].Product.Image" width="60" /> <br />
@@ -48,13 +52,8 @@
                         </div>
                     </td>
                     <td style="padding-left:30px;">
-                        <div>
 
-
-                        </div>
-
-                        <br />
-                        <span style="font-size: 14px; font-weight:bold;">Purchased on:</span>
+                        <span style="font-size: 16px; font-weight:bold;">Purchased on:</span>
                         @{
                             if (pdtGrp.PurchasedItems.Count() == 1)
                             {
@@ -108,11 +107,11 @@
 
                         <br />
 
-                        <span style="font-size: 14px; font-weight:bold;">Quantity:</span>
+                        <span style="font-size: 16px; font-weight:bold;">Quantity:</span>
                         <span> @pdtGrp.TotalQuantity</span>
                         <br />
 
-                        <span style="font-size: 14px; font-weight:bold;">Activation Key:</span>
+                        <span style="font-size: 16px; font-weight:bold;">Activation Key:</span>
                         <div>
                             @if (pdtGrp.TotalQuantity == 1)
                             {
@@ -136,11 +135,15 @@
                         </div>
 
 
-                        <br />
+                        <br /><br /><br />
                     </td>
+                   
                 </tr>
+                
             }
         </table>
+
+        <br /><br /><br />
 
     }
 }

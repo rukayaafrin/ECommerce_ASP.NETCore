@@ -29,7 +29,7 @@ function sendUpdateQuantity(plus, productId) {
                 let displayquantity = document.getElementById("number_" + data.productId);
                 displayquantity.innerHTML = data.quantity;
                 let displaytotalpriceofthisproduct = document.getElementById("Total_" + data.productId);
-                displaytotalpriceofthisproduct.innerHTML = data.quantity * data.price;
+                displaytotalpriceofthisproduct.innerHTML = data.price;
                 let displaytotalprice = document.getElementById("cTotal");
                 displaytotalprice.innerHTML = data.totalprice;
             }
@@ -43,6 +43,7 @@ function checkLogin() {
     let elemWelcomeUser = document.getElementById("welcomeuser");
 
     if (elemWelcomeUser == null) {
+        window.alert("Please login first before checking out!")
         window.location.href = "/Login/Index";
         return false;
     }

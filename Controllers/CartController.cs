@@ -85,13 +85,16 @@ namespace Layout.Controllers
                 }
             }
 
-            int TotalPrice = 0;
+            double TotalPrice = 0.00;
             foreach (CartDetail cd in existingCartDetails)
             {
                 TotalPrice = TotalPrice + cd.Quantity * cd.Product.Price;
             }
 
-            return Json(new { status = "success", productId = input.ProductId, price = cartDetailWithThisProduct.Product.Price, quantity = cartDetailWithThisProduct.Quantity, totalprice = TotalPrice });
+            string pdtprice = $"${(cartDetailWithThisProduct.Product.Price*cartDetailWithThisProduct.Quantity):0.00}";
+            string totalprice = $"${TotalPrice:0.00}";
+
+            return Json(new { status = "success", productId = input.ProductId, price = pdtprice, quantity = cartDetailWithThisProduct.Quantity, totalprice = totalprice});
         }
 
 

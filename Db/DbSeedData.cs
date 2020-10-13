@@ -75,7 +75,7 @@ namespace Layout.Db
                     {
                         Name = quartet[0],
                         Description = quartet[1],
-                        Price = int.Parse(quartet[2]),
+                        Price = double.Parse(quartet[2]),
                         Image = quartet[3]
                     });
                 }
@@ -142,7 +142,7 @@ namespace Layout.Db
                     {
                         PurchaseDetailPurchaseId = temp[0],
                         PurchaseDetailProductId = int.Parse(temp[1]),
-                        PdtAtvKey = temp[2],
+                        PdtAtvKey = temp[2]
                     }) ;
                 }
             }
