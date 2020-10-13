@@ -1,9 +1,31 @@
-﻿window.onload = function () {
+﻿window.onload = function ()
+{
     let elemList = document.getElementsByClassName("addtocart");
     for (i = 0; i < elemList.length; i++) {
         elemList[i].onclick = AddToCart;
     }
+
+    let searchform = document.getElementById("searchform");
+    let searchfield = document.getElementById("searchfield");
+
+    searchform.onsubmit = function () {
+        if ((searchfield.value.trim()).length !== 0)
+            return true;
+        else
+            return false;
+    }
+
+    searchfield.onkeydown = function (event) {
+
+        if (event.key === "Backspace") {
+            if ((searchfield.value.trim()).length === 1) {
+                window.location = "/";
+            }
+        }
+
+    }
 }
+
 
 function AddToCart(event) {
     let elem = event.currentTarget;
@@ -11,6 +33,7 @@ function AddToCart(event) {
     sendAddToCart(true, elem.getAttribute("product_id"))
 
 }
+
 function sendAddToCart(added, productId) {
 
     let xhr = new XMLHttpRequest();
@@ -31,3 +54,4 @@ function sendAddToCart(added, productId) {
 
     xhr.send(JSON.stringify({ Added: added, ProductId: productId }));
 }
+
