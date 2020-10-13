@@ -38,3 +38,16 @@ function sendUpdateQuantity(plus, productId) {
 
     xhr.send(JSON.stringify({ Plus: plus, ProductId: productId }));
 }
+
+function checkLogin() {
+    let elemWelcomeUser = document.getElementById("welcomeuser");
+
+    if (elemWelcomeUser == null) {
+        window.location.href = "/Login/Index";
+        return false;
+    }
+
+    else {
+        return true;
+    }
+}

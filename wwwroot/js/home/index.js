@@ -18,7 +18,7 @@
 
     searchfield.onchange = function()
     {
-        if ((searchfield.value.trim()).length === 0)
+        if ((searchfield.value.trim()).length === 0 && window.location.href!=="/")
             window.location = "/";       
     }
 
