@@ -18,7 +18,10 @@
 
     searchfield.onchange = function()
     {
-        if ((searchfield.value.trim()).length === 0 && window.location.href!=="/")
+        let url = window.location.href;
+        let i = url.lastIndexOf("?keyword");
+
+        if ((searchfield.value.trim()).length === 0 && i!==-1)
             window.location = "/";       
     }
 
