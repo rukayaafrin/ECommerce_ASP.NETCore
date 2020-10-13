@@ -21,10 +21,9 @@ namespace Layout.Controllers
         {
             Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
             User guestUser = db.Users.FirstOrDefault(x => x.Id == Request.Cookies["guestId"]);
-
+            Cart existingCart = null;
             if ((session != null || guestUser != null) && !(session != null && guestUser != null))
             {
-                Cart existingCart = null;
                 //logged in user
                 if (session != null)
                 {
@@ -43,23 +42,81 @@ namespace Layout.Controllers
                 {
                     List<CartDetail> cartDetails = db.CartDetails.Where(x => x.CartId == existingCart.Id).ToList(); 
                     ViewData["cart"] = cartDetails;
-
                 }
 
             }
-            
             return View();
         }
 
-        //for implementing ajax...
-        public JsonResult GetData()
+        [HttpPost]
+        public IActionResult UpdateQuantityInCart([FromBody] UpdateQuantityInput input)
         {
-            List<CartDetail> orderDetails = db.CartDetails.ToList();
-            return Json(orderDetails);
+            Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
+            User guestUser = db.Users.FirstOrDefault(x => x.Id == Request.Cookies["guestId"]);
+            Cart existingCart = null;
+            if ((session != null || guestUser != null) && !(session != null && guestUser != null))
+            {
+                //logged in user
+                if (session != null)
+                {
+                    existingCart = db.Carts.FirstOrDefault(x => (x.UserId == session.UserId));
+                }
+                //guest user
+                else
+                {
+                    existingCart = db.Carts.FirstOrDefault(x => (x.UserId == guestUser.Id));
 
+                }
+            }
+            List<CartDetail> existingCartDetails = existingCart.CartDetails.ToList();
+            CartDetail cartDetailWithThisProduct = existingCartDetails.Find(x => x.ProductId == int.Parse(input.ProductId));
 
+            if (input.Plus)
+            {
+                cartDetailWithThisProduct.Quantity = cartDetailWithThisProduct.Quantity + 1;
+                db.SaveChanges();
+            }
+            else
+            {
+                if(cartDetailWithThisProduct.Quantity > 1)
+                {
+                    cartDetailWithThisProduct.Quantity = cartDetailWithThisProduct.Quantity - 1;
+                    db.SaveChanges();
+                }
+            }
+
+            int TotalPrice = 0;
+            foreach (CartDetail cd in existingCartDetails)
+            {
+                TotalPrice = TotalPrice + cd.Quantity * cd.Product.Price;
+            }
+
+            return Json(new { status = "success", productId = input.ProductId, price = cartDetailWithThisProduct.Product.Price, quantity = cartDetailWithThisProduct.Quantity, totalprice = TotalPrice });
         }
+        public IActionResult Remove(string productId)
+        {
+            Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
+            User guestUser = db.Users.FirstOrDefault(x => x.Id == Request.Cookies["guestId"]);
+            Cart existingCart = null;
+            if ((session != null || guestUser != null) && !(session != null && guestUser != null))
+            {
+                //logged in user
+                if (session != null)
+                {
+                    existingCart = db.Carts.FirstOrDefault(x => (x.UserId == session.UserId));
+                }
+                //guest user
+                else
+                {
+                    existingCart = db.Carts.FirstOrDefault(x => (x.UserId == guestUser.Id));
 
-
+                }
+            }
+            List<CartDetail> existingCartDetails = existingCart.CartDetails.ToList();
+            CartDetail cartDetailWithThisProduct = existingCartDetails.Find(x => x.ProductId == int.Parse(productId));
+            db.Remove(cartDetailWithThisProduct);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
 }

@@ -30,7 +30,7 @@
     {
         <span style=" float:right">
             Total: $ <span id="cTotal">
-                @{
+                @{ 
                     int sum = 0;
                     foreach (CartDetail cd in cartDetails)
                     {
@@ -40,7 +40,7 @@
                 @sum
             </span>
         </span>
-
+        
 
         <table align="center">
             <tr>
@@ -117,7 +117,7 @@
                     </td>
                     <td>
                         <form id="form" action="/Cart/Remove" method="POST">
-                            <input type="hidden" name="productId" value="@cd.ProductId" />
+                            <input type="hidden" name="productId" value="@cd.ProductId"/>
                             <input type="Submit" value="Remove" class="btn btn-primary" />
                         </form>
                     </td>
@@ -132,5 +132,5 @@
 
         </table>
 
+        }
     }
-}
