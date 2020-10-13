@@ -8,23 +8,32 @@
     let searchform = document.getElementById("searchform");
     let searchfield = document.getElementById("searchfield");
 
-    searchform.onsubmit = function () {
+    searchform.onsubmit = function ()
+    {
         if ((searchfield.value.trim()).length !== 0)
             return true;
         else
             return false;
     }
 
-    searchfield.onkeydown = function (event) {
-
-        if (event.key === "Backspace") {
-            if ((searchfield.value.trim()).length === 1) {
-                window.location = "/";
-            }
-        }
-
+    searchfield.onchange = function()
+    {
+        if ((searchfield.value.trim()).length === 0)
+            window.location = "/";       
     }
+
+    searchfield.onkeydown = function (event)
+    {
+        if (event.key === "Backspace" || event.key === "Delete")
+        {
+            if ((searchfield.value.trim()).length === 1) 
+                window.location = "/";
+        }
+    }
+    
 }
+
+
 
 
 function AddToCart(event) {
