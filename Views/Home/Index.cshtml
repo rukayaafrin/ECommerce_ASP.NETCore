@@ -9,24 +9,21 @@
 
 <div align="right" style="padding-right:30px">
     <a href="/Cart/Index"><img src="~/images/Cart.png" width="30" /></a>
-    <div id="cart_counter" style="border:1px solid black; width:30px; border-radius: 15px; padding: 5px 10px; display:inline; font-weight:bold;">
+    <div id="cart_counter" style="border:1px solid black; border-radius:2px; width:30px; border-radius: 15px; padding: 5px 10px; display:inline; font-weight:bold;">
         @ViewData["numberOfProductsInCart"]
     </div>
 </div>
 
-<div class="input-group mb-3 col-8" style="margin:auto;">
-    <form id="searchform" method="get" asp-action="Index">
-        <div class="input-group-prepend">
-            <p>
-                <span class="input-group-text" id="basic-addon1">
-                    <img src="~/images/search.png" width="20" height="20" />
-                    <input id="searchfield" class="form-control" value=@ViewData["searchtext"] type="search" placeholder="Search" name="keyword" style="width:500px; height:30px" />
-                    <input type="submit" value=" Search" class="btn btn-primary" />
-                </span>
-            </p>
-        </div>
-    </form>
-</div>
+
+<form id="searchform" method="get" asp-action="Index">
+    <div class="container" align="center">
+        <span>
+            <input id="searchfield" value=@ViewData["searchtext"] type="search" placeholder="Search" name="keyword" style="height:40px; width:700px;" />
+            <img src="~/images/search.png" style="width:20px" />
+        </span>
+    </div>
+</form>
+
 
 <table align="center">
     @{
@@ -53,7 +50,7 @@
                                         @products[i].Description
                                     </div>
                                     <br />
-                                    <br /> 
+                                    <br />
                                     <button product_id=@products[i].Id class="btn btn-primary addtocart" style="padding: 5px 5px; width:160px;">$@products[i].Price - Add To Cart</button>
                                 </p>
                             </div>

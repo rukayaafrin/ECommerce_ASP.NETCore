@@ -40,7 +40,7 @@ namespace Layout.Controllers
                 //cart exists
                 if (existingCart != null)
                 {
-                    List<CartDetail> cartDetails = db.CartDetails.Where(x => x.CartId == existingCart.Id).ToList(); 
+                    List<CartDetail> cartDetails = db.CartDetails.Where(x => x.CartId == existingCart.Id).ToList();
                     ViewData["cart"] = cartDetails;
                 }
 
@@ -78,7 +78,7 @@ namespace Layout.Controllers
             }
             else
             {
-                if(cartDetailWithThisProduct.Quantity > 1)
+                if (cartDetailWithThisProduct.Quantity > 1)
                 {
                     cartDetailWithThisProduct.Quantity = cartDetailWithThisProduct.Quantity - 1;
                     db.SaveChanges();
@@ -115,7 +115,7 @@ namespace Layout.Controllers
 
                 }
             }
-            
+
             //retrieve all existing cart items 
             List<CartDetail> existingCartDetails = existingCart.CartDetails.ToList();
 
@@ -125,7 +125,7 @@ namespace Layout.Controllers
             db.SaveChanges();
 
             //check that if cart has no more item, remove cart
-            if(existingCart.CartDetails.ToList().Count()==0)
+            if (existingCart.CartDetails.ToList().Count() == 0)
             {
                 db.Remove(existingCart);
                 db.SaveChanges();
