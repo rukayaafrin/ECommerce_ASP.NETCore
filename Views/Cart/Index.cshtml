@@ -116,7 +116,10 @@
 
                     </td>
                     <td>
-                        <button id="remove" value="">Remove</button>
+                        <form id="form" action="/Cart/Remove" method="POST">
+                            <input type="hidden" name="productId" value="@cd.ProductId"/>
+                            <input type="Submit" value="Remove" class="btn btn-primary" />
+                        </form>
                     </td>
                     <td>
                         <div>

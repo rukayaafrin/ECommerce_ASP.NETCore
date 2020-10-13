@@ -93,5 +93,30 @@ namespace Layout.Controllers
 
             return Json(new { status = "success", productId = input.ProductId, price = cartDetailWithThisProduct.Product.Price, quantity = cartDetailWithThisProduct.Quantity, totalprice = TotalPrice });
         }
+        public IActionResult Remove(string productId)
+        {
+            Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
+            User guestUser = db.Users.FirstOrDefault(x => x.Id == Request.Cookies["guestId"]);
+            Cart existingCart = null;
+            if ((session != null || guestUser != null) && !(session != null && guestUser != null))
+            {
+                //logged in user
+                if (session != null)
+                {
+                    existingCart = db.Carts.FirstOrDefault(x => (x.UserId == session.UserId));
+                }
+                //guest user
+                else
+                {
+                    existingCart = db.Carts.FirstOrDefault(x => (x.UserId == guestUser.Id));
+
+                }
+            }
+            List<CartDetail> existingCartDetails = existingCart.CartDetails.ToList();
+            CartDetail cartDetailWithThisProduct = existingCartDetails.Find(x => x.ProductId == int.Parse(productId));
+            db.Remove(cartDetailWithThisProduct);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
 }
