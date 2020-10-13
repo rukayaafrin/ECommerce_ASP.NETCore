@@ -93,11 +93,14 @@ namespace Layout.Controllers
 
             return Json(new { status = "success", productId = input.ProductId, price = cartDetailWithThisProduct.Product.Price, quantity = cartDetailWithThisProduct.Quantity, totalprice = TotalPrice });
         }
+
+
         public IActionResult Remove(string productId)
         {
             Session session = db.Sessions.FirstOrDefault(x => x.Id == Request.Cookies["sessionId"]);
             User guestUser = db.Users.FirstOrDefault(x => x.Id == Request.Cookies["guestId"]);
             Cart existingCart = null;
+
             if ((session != null || guestUser != null) && !(session != null && guestUser != null))
             {
                 //logged in user
@@ -112,11 +115,24 @@ namespace Layout.Controllers
 
                 }
             }
+            
+            //retrieve all existing cart items 
             List<CartDetail> existingCartDetails = existingCart.CartDetails.ToList();
+
+            //locate cart item to be removed and remove it
             CartDetail cartDetailWithThisProduct = existingCartDetails.Find(x => x.ProductId == int.Parse(productId));
             db.Remove(cartDetailWithThisProduct);
             db.SaveChanges();
+
+            //check that if cart has no more item, remove cart
+            if(existingCart.CartDetails.ToList().Count()==0)
+            {
+                db.Remove(existingCart);
+                db.SaveChanges();
+            }
+
             return RedirectToAction("Index");
+
         }
     }
 }
