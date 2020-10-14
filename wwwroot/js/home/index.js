@@ -27,7 +27,9 @@
 
     searchfield.onkeydown = function (event)
     {
-        if (event.key === "Backspace" || event.key === "Delete")
+        let url = window.location.href;
+        let i = url.lastIndexOf("?keyword");
+        if ((event.key === "Backspace" || event.key === "Delete") && i!==-1)
         {
             if ((searchfield.value.trim()).length === 1) 
                 window.location = "/";
