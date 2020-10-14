@@ -86,6 +86,7 @@ namespace Layout.Controllers
             return View();
         }
 
+        [HttpPost]
         public IActionResult GetDate([FromBody] AtvKeyInput input)
         {
             ActivationKey ak = db.ActivationKeys.Where(x => x.PdtAtvKey == input.AtvKey).FirstOrDefault();
