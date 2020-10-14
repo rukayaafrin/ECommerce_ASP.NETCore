@@ -91,8 +91,8 @@ namespace Layout.Controllers
                 TotalPrice = TotalPrice + cd.Quantity * cd.Product.Price;
             }
 
-            string pdtprice = $"${(cartDetailWithThisProduct.Product.Price*cartDetailWithThisProduct.Quantity):0.00}";
-            string totalprice = $"${TotalPrice:0.00}";
+            string pdtprice = $"${(cartDetailWithThisProduct.Product.Price*cartDetailWithThisProduct.Quantity):#,0.00}";
+            string totalprice = $"${TotalPrice:#,0.00}";
 
             return Json(new { status = "success", productId = input.ProductId, price = pdtprice, quantity = cartDetailWithThisProduct.Quantity, totalprice = totalprice});
         }
